@@ -7,4 +7,15 @@ Basic description of apps folder:
 
 ---
 
-# Other items to add
+# Change Log [YYYY-MM-DD]
+
+### [2025-06-10] - Initial Setup
+
+- Created empty folder for apps.
+- Added README.md to provide information about the apps folder.
+- Added subfolders for client and server applications.
+- Added README.md files in client and server folders to provide specific information about each application.
+
+---
+
+# Notes
