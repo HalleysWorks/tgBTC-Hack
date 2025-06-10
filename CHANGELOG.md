@@ -69,3 +69,18 @@ Details of change using heading level 4 to 6, bulleted lists, and other markdown
 
 > Today's changelog is exception to general rules, otherwise no change log should be created for docs or empty folders, from now on only changes made to code that affect the functionality of the project will be documented in this file.
 > This change log is intended to provide a clear and concise history of the project's development, making it easier for contributors and users to understand the evolution of the project.
+
+# NOTES and TODOs
+
+- Each change that could be ADDED, REMOVED, MODIFIED, FIXED, or DOCUMENTED should start with either
+  - INTERNAL or EXTERNAL, depending on whether the change should be shown to the end user or not.
+- The date format should be YYYY-MM-DD.
+- The version format should be MAJOR.MINOR.PATCH, where:
+  - MAJOR version is incremented for incompatible API changes,
+  - MINOR version is incremented for new features that are backward-compatible,
+  - PATCH version is incremented for backward-compatible bug fixes.
+
+## TODO
+
+- [ ] Make a script to automate website generation from the CHANGELOG.md file.
+  - [ ] The script should generate two websites one for internal use and one for external use.
