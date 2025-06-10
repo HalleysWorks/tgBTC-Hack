@@ -1,5 +1,18 @@
 # tgBTC
 
+If already read skip to the
+
+- [General Information](#general-information) section.
+  - [GitHub and Git Related Information](#github-and-git-related-information)
+  - [Documentation Related information](#documentation-related-information)
+  - [General Instructions](#general-instructions)
+    - [GitHub and Git Related Instructions](#github-and-git-related-instructions)
+    - [Creating a New Folder](#creating-a-new-folder)
+      - [Automated Method](#automated-method)
+      - [Manual Method](#manual-method)
+- [Idea](#idea)
+- [How to run](#how-to-run)
+
 ## General Information
 
 ### GitHub and Git Related Information
