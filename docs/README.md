@@ -2,6 +2,9 @@
 
 ## Links
 
+- [TON - ChatGPT details](https://chatgpt.com/share/6849cec9-1278-8000-9061-90cca1131c09)
+  It tells us about tgBTC and TON platform
+
 - [TON Link](https://ton.org/)  
    Official website for The Open Network (TON), providing information about the blockchain ecosystem.
 
