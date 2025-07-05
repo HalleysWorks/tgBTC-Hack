@@ -1,0 +1,275 @@
+#include "imports/stdlib.fc";
+
+;; ==============================
+;; TgBtcVault Contract (Corrected)
+;; ==============================
+
+;; Forward declarations
+() load_data() inline;
+() save_data() impure inline;
+() init_vault(slice admin_addr, slice tgbtc_master) impure;
+() handle_deposit(slice sender, slice body, int qid) impure;
+() handle_withdraw(slice sender, slice body, int qid) impure;
+() handle_rebalance(slice sender, slice body, int qid) impure;
+int get_total_shares() inline;
+() send_confirmation(slice dst, int qid, int shares) impure;
+() send_tokens(slice dst, int qid, int tgbtc_amt, int ton_amt) impure;
+
+;; Storage layout
+global int    ctx_total_tgbtc;
+global int    ctx_total_ton;
+global cell   ctx_lp_shares;
+global slice  ctx_admin_address;
+global slice  ctx_tgbtc_jetton_master;
+global int    ctx_paused;
+global int    ctx_reentrancy_lock;
+
+const int op::init_vault = 0;
+const int op::deposit    = 1;
+const int op::withdraw   = 2;
+const int op::rebalance  = 3;
+const int op::pause      = 4;
+const int op::unpause    = 5;
+
+const int error::not_admin            = 100;
+const int error::paused               = 101;
+const int error::invalid_amount       = 102;
+const int error::insufficient_balance = 103;
+const int error::reentrancy           = 104;
+const int error::invalid_jetton       = 105;
+
+;; Load state
+() load_data() inline {
+  slice ds = get_data().begin_parse();
+  ctx_total_tgbtc         = ds~load_coins();
+  ctx_total_ton           = ds~load_coins();
+  ctx_lp_shares           = ds~load_dict();
+  ctx_admin_address       = ds~load_msg_addr();
+  ctx_tgbtc_jetton_master = ds~load_msg_addr();
+  ctx_paused              = ds~load_uint(1);
+  ctx_reentrancy_lock     = ds~load_uint(1);
+  ds.end_parse();
+}
+
+;; Save state
+() save_data() impure inline {
+  cell d = begin_cell()
+    .store_coins(ctx_total_tgbtc)
+    .store_coins(ctx_total_ton)
+    .store_dict(ctx_lp_shares)
+    .store_slice(ctx_admin_address)
+    .store_slice(ctx_tgbtc_jetton_master)
+    .store_uint(ctx_paused, 1)
+    .store_uint(ctx_reentrancy_lock, 1)
+  .end_cell();
+  set_data(d);
+}
+
+;; Initialization
+() init_vault(slice admin_addr, slice tgbtc_master) impure {
+  load_data();
+  throw_unless(error::not_admin, slice_empty?(ctx_admin_address));
+  ctx_admin_address       = admin_addr;
+  ctx_tgbtc_jetton_master = tgbtc_master;
+  ctx_total_tgbtc         = 0;
+  ctx_total_ton           = 0;
+  ctx_lp_shares           = new_dict();
+  ctx_paused              = 0;
+  ctx_reentrancy_lock     = 0;
+  save_data();
+}
+
+;; Deposit handler
+() handle_deposit(slice sender, slice body, int qid) impure {
+  int t_amt = body~load_coins();
+  int o_amt = body~load_coins();
+  throw_if(error::invalid_amount, (t_amt <= 0) | (o_amt <= 0));
+
+  int total_shares = get_total_shares();
+  int shares = (ctx_total_tgbtc == 0)
+    ? min(t_amt, o_amt)
+    : min(
+        t_amt * total_shares / ctx_total_tgbtc,
+        o_amt * total_shares / ctx_total_ton
+      );
+
+  int h = slice_hash(sender);
+  (slice existing, int found) = ctx_lp_shares.udict_get?(256, h);
+  int cur = found ? existing~load_coins() : 0;
+  ctx_lp_shares~udict_set(256, h,
+    begin_cell().store_coins(cur + shares).end_cell().begin_parse());
+
+  ctx_total_tgbtc += t_amt;
+  ctx_total_ton   += o_amt;
+  save_data();
+
+  send_confirmation(sender, qid, shares);
+}
+
+;; Withdraw handler
+() handle_withdraw(slice sender, slice body, int qid) impure {
+  int shares = body~load_coins();
+  throw_if(error::invalid_amount, shares <= 0);
+
+  int h = slice_hash(sender);
+  (slice us, int found) = ctx_lp_shares.udict_get?(256, h);
+  throw_unless(error::insufficient_balance, found);
+  int user_shares = us~load_coins();
+  throw_if(error::insufficient_balance, user_shares < shares);
+
+  int total_shares = get_total_shares();
+  int t_out = ctx_total_tgbtc * shares / total_shares;
+  int o_out = ctx_total_ton   * shares / total_shares;
+
+  int rem = user_shares - shares;
+  if (rem > 0) {
+    ctx_lp_shares~udict_set(256, h,
+      begin_cell().store_coins(rem).end_cell().begin_parse());
+  } else {
+    ctx_lp_shares~udict_delete?(256, h);
+  }
+
+  ctx_total_tgbtc -= t_out;
+  ctx_total_ton   -= o_out;
+  save_data();
+
+  send_tokens(sender, qid, t_out, o_out);
+}
+
+;; Rebalance handler
+() handle_rebalance(slice sender, slice body, int qid) impure {
+  slice pool = body~load_msg_addr();
+  int d_t = body~load_int(257);
+  int d_o = body~load_int(257);
+
+  throw_if(error::insufficient_balance, (d_t < 0) & ((0 - d_t) > ctx_total_tgbtc));
+  throw_if(error::insufficient_balance, (d_o < 0) & ((0 - d_o) > ctx_total_ton));
+
+  cell msg = begin_cell()
+    .store_uint(0x18, 6)
+    .store_slice(pool)
+    .store_coins(100000000)
+    .store_uint(0, 107)            ;; body header bit‐length
+    .store_uint(op::rebalance, 32)
+    .store_uint(qid, 64)
+    .store_int(d_t, 257)
+    .store_int(d_o, 257)
+  .end_cell();
+  send_raw_message(msg, 3);
+
+  ctx_total_tgbtc += d_t;
+  ctx_total_ton   += d_o;
+  save_data();
+}
+
+;; Utility: total shares
+int get_total_shares() inline {
+  int sum = 0;
+  int key = -1;
+  int flag = 1;
+  do {
+    (key, slice v, flag) = ctx_lp_shares.udict_get_next?(256, key);
+    if (flag != 0) {
+      sum += v~load_coins();
+    }
+  } until (flag == 0);
+  return sum;
+}
+
+;; Confirmation message
+() send_confirmation(slice dst, int qid, int shares) impure {
+  cell m = begin_cell()
+    .store_uint(0x18, 6)
+    .store_slice(dst)
+    .store_coins(10000000)
+    .store_uint(0x1234, 32)
+    .store_uint(qid, 64)
+    .store_coins(shares)
+  .end_cell();
+  send_raw_message(m, 3);
+}
+
+;; Token transfer
+() send_tokens(slice dst, int qid, int tgbtc_amt, int ton_amt) impure {
+  ;; Jetton transfer
+  cell jt = begin_cell()
+    .store_uint(0x18, 6)
+    .store_slice(ctx_tgbtc_jetton_master)
+    .store_coins(1)
+    .store_uint(0, 107)           ;; body header bit‐length
+    .store_uint(0x0f8a7ea5, 32)
+    .store_uint(qid, 64)
+    .store_coins(tgbtc_amt)
+    .store_slice(dst)
+    .store_slice(dst)
+    .store_uint(0, 1)
+  .end_cell();
+  send_raw_message(jt, 3);
+
+  ;; TON transfer
+  if (ton_amt > 0) {
+    cell tn = begin_cell()
+      .store_uint(0x18, 6)
+      .store_slice(dst)
+      .store_coins(ton_amt)
+      .store_uint(0, 0)
+    .end_cell();
+    send_raw_message(tn, 3);
+  }
+}
+
+;; Main entrypoint
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    slice cs      = in_msg_full.begin_parse();
+    cs~load_uint(8);
+    slice sender  = cs~load_msg_addr();
+    load_data();
+
+    int op = in_msg_body~load_uint(32);
+    int qid = in_msg_body~load_uint(64);
+
+    if (op == op::deposit) {
+        handle_deposit(sender, in_msg_body, qid);
+        return ();
+    }
+    if (op == op::withdraw) {
+        handle_withdraw(sender, in_msg_body, qid);
+        return ();
+    }
+    if (op == op::rebalance) {
+        throw_unless(
+            error::not_admin,
+            slice_hash(sender) == slice_hash(ctx_admin_address)
+        );
+        throw_if(error::paused, ctx_paused);
+        handle_rebalance(sender, in_msg_body, qid);
+        return ();
+    }
+    if (op == op::pause) {
+        throw_unless(
+            error::not_admin,
+            slice_hash(sender) == slice_hash(ctx_admin_address)
+        );
+        ctx_paused = 1;
+        save_data();
+        return ();
+    }
+    if (op == op::unpause) {
+        throw_unless(
+            error::not_admin,
+            slice_hash(sender) == slice_hash(ctx_admin_address)
+        );
+        ctx_paused = 0;
+        save_data();
+        return ();
+    }
+    if (op == op::init_vault) {
+        init_vault(
+            in_msg_body~load_msg_addr(),
+            in_msg_body~load_msg_addr()
+        );
+        return ();
+    }
+}
+
+
