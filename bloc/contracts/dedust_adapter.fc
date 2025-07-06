@@ -1,0 +1,56 @@
+#include "imports/stdlib.fc";
+
+;; ==============================
+;; DeDust Pool Adapter
+;; ==============================
+
+const slice DEDUST_FACTORY_ADDRESS =
+  "EQBfBWT7X2BHg9tXAxzhz2aKiNTU1tpt5NsiK0uSDW_YAJ67"a;
+
+const int DEDUST_GET_POOL_DATA    = 0x8d1f24d6;
+const int DEDUST_ADD_LIQUIDITY_OP = 0x3ebe5431;
+
+() query_dedust_pool_reserves(slice pool_address, int query_id) impure {
+    cell msg = begin_cell()
+        .store_uint(0x18, 6)
+        .store_slice(pool_address)
+        .store_coins(100000000)
+        .store_uint(0, 107)
+        .store_uint(DEDUST_GET_POOL_DATA, 32)
+        .store_uint(query_id, 64)
+    .end_cell();
+    send_raw_message(msg, 3);
+}
+
+() add_liquidity_dedust(slice pool_address, int amount0, int amount1, int query_id) impure {
+    cell msg = begin_cell()
+        .store_uint(0x18, 6)
+        .store_slice(pool_address)
+        .store_coins(200000000)
+        .store_uint(0, 107)
+        .store_uint(DEDUST_ADD_LIQUIDITY_OP, 32)
+        .store_uint(query_id, 64)
+        .store_coins(amount0)
+        .store_coins(amount1)
+        .store_coins(1)
+    .end_cell();
+    send_raw_message(msg, 3);
+}
+
+() handle_dedust_pool_response(slice in_msg_body) impure {
+    int op       = in_msg_body~load_uint(32);
+    int query_id = in_msg_body~load_uint(64);
+
+    if (op == DEDUST_GET_POOL_DATA) {
+        int reserve0 = in_msg_body~load_coins();
+        int reserve1 = in_msg_body~load_coins();
+        slice addr0  = in_msg_body~load_msg_addr();
+        slice addr1  = in_msg_body~load_msg_addr();
+        ;; on‐chain adapters typically forward or store this data; omitted here
+    }
+}
+
+;; Dummy main entrypoint for Blueprint/Fift
+() main() impure {
+    return ();
+}
