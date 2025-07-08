@@ -1,0 +1,8 @@
+#include "../imports/stdlib.fc" ;
+;; Storage: balance:uint64 owner:addr master:addr
+() recv_internal(int,cell,slice){}
+
+() get_wallet_data() method_id {
+  var s = get_data().begin_parse();
+  return (s~load_uint(64), s~load_msg_addr(), s~load_msg_addr());
+}
