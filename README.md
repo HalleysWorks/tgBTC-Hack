@@ -1,4 +1,4 @@
-# tg-btc
+# custom
 
 ## Project structure
 
