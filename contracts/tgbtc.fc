@@ -1,5 +1,5 @@
 ;; Minimal Jetton Minter (demo-only, no wallet discovery)
-#include "../imports/stdlib.fc" ;
+#include "./stdlib.fc" ;
 
 ;; Storage:
 ;; 0 uint64 totalSupply

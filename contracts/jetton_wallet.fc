@@ -1,4 +1,4 @@
-#include "../imports/stdlib.fc" ;
+#include "./stdlib.fc" ;
 ;; Storage: balance:uint64 owner:addr master:addr
 () recv_internal(int,cell,slice){}
 

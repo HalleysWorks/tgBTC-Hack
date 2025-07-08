@@ -1,7 +1,7 @@
 ;; ─────────────────────────────────────────────────────────────
 ;; Vault – central LP vault for TON / tgBTC demo liquidity
 ;; ─────────────────────────────────────────────────────────────#include "stdlib.fc"
-#include "../imports/stdlib.fc";
+#include "./stdlib.fc";
 
 ;; ────────── Storage layout ──────────
 ;; 0 uint64 : total TON balance (nanoTON)

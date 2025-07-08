@@ -2,7 +2,7 @@
 ;; DeDust – dummy DEX pool for TON/tgBTC demo
 ;; ─────────────────────────────────────────────────────────────
 
-#include "../imports/stdlib.fc";
+#include "./stdlib.fc";
 ;; ────────── Storage layout ──────────
 ;; 0 uint64 : TON reserve (nanoTON)
 ;; 1 uint64 : tgBTC reserve (nanoJetton)
@@ -10,23 +10,21 @@
 ;; 3 uint32 : Mock APY in basis points (e.g. 450 = 4.50%)
 ;; 4 addr   : Admin (for future extensions)
 
-() recv_internal(int msg_value, cell in_full, slice in_body) impure {
-  ;; If no body, ignore
-  if (in_body.slice_empty?()) {
-    return ();
-  }
-  int op = in_body~load_uint(32);
-  if (op == 10) {            ;; add_liquidity
-    handle_add(in_full, in_body, msg_value);
-  }
-  if (op == 11) {            ;; remove_liquidity
-    handle_remove(in_full, in_body);
-  }
-}
-
 ;; ────────── Helpers ──────────
 
-() load_state() method_id {
+
+(int) sqrt(int x)  {
+  if (x <= 0) { return 0; }
+  int z = (x + 1) / 2;
+  int y = x;
+  while (z < y) {
+    y = z;
+    z = (x / z + z) / 2;
+  }
+  return y;
+}
+
+(int, int, int, int, slice) load_state() method_id {
   slice ds = get_data().begin_parse();
   int ton_res   = ds~load_uint(64);
   int tgbtc_res = ds~load_uint(64);
@@ -55,18 +53,6 @@
     return min(share_ton, share_tgbtc);
 }
 
-
-
-() sqrt(int x)  {
-  if (x <= 0) { return 0; }
-  int z = (x + 1) / 2;
-  int y = x;
-  while (z < y) {
-    y = z;
-    z = (x / z + z) / 2;
-  }
-  return y;
-}
 
 ;; ────────── Operations ──────────
 
@@ -115,9 +101,23 @@
   ;; return tgBTC (omitted actual transfer for simplicity)
 }
 
+() recv_internal(int msg_value, cell in_full, slice in_body) impure {
+  ;; If no body, ignore
+  if (in_body.slice_empty?()) {
+    return ();
+  }
+  int op = in_body~load_uint(32);
+  if (op == 10) {            ;; add_liquidity
+    handle_add(in_full, in_body, msg_value);
+  }
+  if (op == 11) {            ;; remove_liquidity
+    handle_remove(in_full, in_body);
+  }
+}
+
 ;; ────────── Getters ──────────
 
-() get_pool_info() method_id {
+(int, int, int, int) get_pool_info() method_id {
   var (ton_res, tgbtc_res, lp_tot, apy, _) = load_state();
   return (ton_res, tgbtc_res, lp_tot, apy);
 }

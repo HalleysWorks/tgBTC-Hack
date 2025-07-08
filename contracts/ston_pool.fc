@@ -1,7 +1,7 @@
 ;; ─────────────────────────────────────────────────────────────
 ;; STON.fi – dummy DEX pool for TON/tgBTC demo
 ;; ─────────────────────────────────────────────────────────────
-#include "../imports/stdlib.fc";
+#include "./stdlib.fc";
 
 
 ;; ────────── Storage layout ──────────
