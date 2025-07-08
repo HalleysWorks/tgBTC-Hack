@@ -1,0 +1,224 @@
+;; ─────────────────────────────────────────────────────────────
+;; Vault – central LP vault for TON / tgBTC demo liquidity
+;; ─────────────────────────────────────────────────────────────#include "stdlib.fc"
+#include "../imports/stdlib.fc";
+
+;; ────────── Storage layout ──────────
+;; 0 uint64 : total TON balance (nanoTON)
+;; 1 uint64 : total tgBTC balance (nanoJetton)
+;; 2 addr   : admin
+;; 3 addr   : STON.fi pool
+;; 4 addr   : DeDust pool
+;; 5 addr   : Megaton pool
+;; 6 dict   : lpShares – key = addr → uint64 shares
+;; 7 cell   : params (unused);
+
+() recv_internal(int msg_value, cell in_full, slice in_body) impure {
+  if (in_body.slice_empty?()) {
+    ;; Bare TON transfer → treat as single-sided deposit
+    slice hdr = in_full.begin_parse();
+    hdr~load_uint(4);               ;; reject flags
+    slice sender = hdr~load_msg_addr();
+    handle_deposit(sender, msg_value, 0);
+    return ();
+  }
+
+  int op = in_body~load_uint(32);
+  if (op == 1) {;; deposit TON + tgBTC
+    slice sender = in_body~load_msg_addr();
+    int ton   = in_body~load_uint(64);
+    int tgbtc = in_body~load_uint(64);
+    handle_deposit(sender, ton, tgbtc);
+  }
+  if (op == 2) {;; withdraw
+    slice sender = in_body~load_msg_addr();
+    int shares   = in_body~load_uint(64);
+    handle_withdraw(sender, shares);
+  }
+  if (op == 3) {;; rebalance
+    require(msg_value >= 1_000_000_000, 74); ;; ≥0.1 TON gas
+    handle_rebalance();
+  }
+}
+
+;; ────────── Helpers ──────────
+
+() load_state() method_id {
+  slice ds = get_data().begin_parse();
+  int ton_bal   = ds~load_uint(64);
+  int btc_bal   = ds~load_uint(64);
+  slice admin   = ds~load_msg_addr();
+  slice ston    = ds~load_msg_addr();
+  slice dedust  = ds~load_msg_addr();
+  slice mega    = ds~load_msg_addr();
+  dict shares_d = ds~load_dict();
+  return (ton_bal, btc_bal, admin, ston, dedust, mega, shares_d);
+}
+
+() save_state(int ton_bal, int btc_bal,
+              slice admin, slice ston, slice dedust, slice mega,
+              dict shares_d) impure {
+  builder b = begin_cell();
+  b.store_uint(ton_bal, 64)
+   .store_uint(btc_bal, 64)
+   .store_slice(admin)
+   .store_slice(ston)
+   .store_slice(dedust)
+   .store_slice(mega)
+   .store_dict(shares_d)
+   .store_ref(begin_cell().end_cell()); ;; params placeholder
+  set_data(b.end_cell());
+}
+
+
+;; mint_shares: add `amount` to the existing shares for `lp`
+(dict) mint_shares(dict d, slice lp, int amount) impure {
+  ;; lookup existing value
+  (bool found, int cur) = d.dict_get_int?(lp);
+  if (found) {
+    d.dict_set_int(lp, cur + amount);
+  } else {
+    d.dict_set_int(lp, amount);
+  }
+  return d;
+}
+
+;; burn_shares: subtract `amount` from the existing shares, error if underflow
+(dict) burn_shares(dict d, slice lp, int amount) impure {
+  (bool found, int cur) = d.dict_get_int?(lp);
+  require(found, 71);           ;; no entry to burn
+  require(cur >= amount, 72);   ;; insufficient shares
+  int remaining = cur - amount;
+  if (remaining > 0) {
+    d.dict_set_int(lp, remaining);
+  } else {
+    d.dict_remove(lp);
+  }
+  return d;
+}
+
+;; total_shares: sum all uint64 values in the dictionary
+(int) total_shares(dict d) {
+    int sum = 0;
+    slice key = null();  ;; Start with null key to begin iteration
+    int value;
+    int found;
+
+    ;; Iterate over all key-value pairs
+    while (1) {
+        (key, value, found) = d.dict_next?(key);
+        if (~found) {
+            break;
+        }
+        sum += value;
+    }
+    return sum;
+}
+
+;; ────────── Core Logic ──────────
+
+() handle_deposit(slice lp, int ton_amt, int btc_amt) impure {
+  var (ton_bal, btc_bal, admin, ston, dedust, mega, shares_d) = load_state();
+  int minted = ton_amt / 1_000_000_000; ;; 1 share = 1 TON (demo)
+  shares_d = mint_shares(shares_d, lp, minted);
+  save_state(ton_bal + ton_amt, btc_bal + btc_amt,
+             admin, ston, dedust, mega, shares_d);
+}
+
+() handle_withdraw(slice lp, int req) impure {
+  var (ton_bal, btc_bal, admin, ston, dedust, mega, shares_d) = load_state();
+  int total = total_shares(shares_d);
+  require(total > 0, 73);
+  int ton_out = (ton_bal * req) / total;
+  int btc_out = (btc_bal * req) / total;
+  shares_d = burn_shares(shares_d, lp, req);
+  save_state(ton_bal - ton_out, btc_bal - btc_out,
+             admin, ston, dedust, mega, shares_d);
+  ;; Send TON back
+  send_raw_message(
+    begin_cell()
+      .store_uint(0x10,6)
+      .store_slice(lp)
+      .store_coins(ton_out)
+      .end_cell(), 64);
+}
+() get_lp_shares(slice lp) method_id {
+    var (_,_,_,_,_,_,shares_d) = load_state();
+    var (value, found) = shares_d.dict_get?(lp);
+    return (found ? value : 0);
+}
+
+
+() get_balance() method_id {
+  var (ton_bal, btc_bal,_,_,_,_,_) = load_state();
+  return (ton_bal, btc_bal);
+}
+
+;; Call external get_yield method and return its uint32 result (or 0 on failure)
+int mock_pool_yield(slice pool) impure {
+  (bool ok, cell res_cell) = call_get_method(pool, "get_yield", begin_cell().end_cell(), 0);
+  if (ok == 0) {
+    return 0;
+  }
+  slice s = res_cell.begin_parse();
+  return s~load_uint(32);
+}
+
+() handle_rebalance() impure {
+  var (ton_bal, btc_bal, admin, ston, dedust, mega, shares_d) = load_state();
+  int y1 = mock_pool_yield(ston);
+  int y2 = mock_pool_yield(dedust);
+  int y3 = mock_pool_yield(mega);
+
+;; Determine best pool by yield
+slice best = (
+    ((y1 >= y2) & (y1 >= y3))
+      ? ston
+      : (
+          ((y2 >= y1) & (y2 >= y3))
+            ? dedust
+            : mega
+        )
+);
+  int ton80 = (ton_bal * 80) / 100;
+  int ton10 = (ton_bal * 10) / 100;
+  int btc80 = (btc_bal * 80) / 100;
+  int btc10 = (btc_bal * 10) / 100;
+
+send_pool(best, ton80, btc80);
+
+if ((best != ston)) {
+  send_pool(ston, ton10, btc10);
+}
+
+if ((best != dedust)) {
+  send_pool(dedust, ton10, btc10);
+}
+
+if ((best != mega)) {
+  send_pool(mega, ton10, btc10);
+}
+
+  save_state(0, 0, admin, ston, dedust, mega, shares_d);
+}
+() send_pool(slice addr, int ton_amt, int btc_amt) impure {
+  if ((ton_amt == 0) & (btc_amt == 0)) {
+    return ();    ;; return an empty tuple, not just return;
+  }
+
+  send_raw_message(
+    begin_cell()
+      .store_uint(0x10,6)
+      .store_slice(addr)
+      .store_coins(ton_amt)
+      .store_ref(
+        begin_cell()
+          .store_uint(10,32)   ;; op add_liquidity
+          .store_uint(0,64)    ;; query_id
+          .store_coins(ton_amt)
+          .store_coins(btc_amt)
+          .end_cell())
+      .end_cell(),
+    64
+  );
+}

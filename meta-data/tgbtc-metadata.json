@@ -1,0 +1,7 @@
+{
+    "name": "tgBTC (Testnet)",
+    "symbol": "tBTC",
+    "decimals": 9,
+    "description": "Dummy Bitcoin-pegged jetton for hackathon demos.",
+    "image": "https://dummyimage.com/512x512/000/fff.png&text=tgBTC"
+}

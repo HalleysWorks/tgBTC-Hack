@@ -1,0 +1,49 @@
+;; Minimal Jetton Minter (demo-only, no wallet discovery)
+#include "../imports/stdlib.fc" ;
+
+;; Storage:
+;; 0 uint64 totalSupply
+;; 1 addr   admin
+;; 2 cell   walletCode
+
+() recv_internal(int msg_v, cell in_full, slice body) impure {
+    ;; Parse the body
+    int op = body~load_uint(32);
+
+    if (op == 1) {  ;; mint(to, amount)
+        ;; Next comes the “to” address
+        slice to = body~load_msg_addr();
+        ;; Then the amount
+        int amount = body~load_uint(64);
+
+        ;; Load current state
+        (int supply, slice adm, cell wcode) = load_state();
+
+        ;; Authorization check: only the admin can mint
+        ;; in_msg_sender_pubkey()==0 ensures it’s an external internal message
+        ;; in_msg_sender_addr() must equal adm
+        require((in_msg_sender_pubkey() == 0) & 
+                (in_msg_sender_addr() == adm), 401);
+
+        ;; Update total supply
+        supply = supply + amount;
+
+        ;; Save back state (note “wcode” is the jetton-wallet code cell)
+        save_state(supply, adm, wcode);
+
+        ;; (Skipping actual wallet‐deployment in demo)
+    }
+}
+
+
+() load_state() method_id {
+  var s = get_data().begin_parse();
+  return (s~load_uint(64), s~load_msg_addr(), s~load_ref());
+}
+() save_state(int sup,slice adm, cell wc) impure {
+  set_data(begin_cell().store_uint(sup,64).store_slice(adm).store_ref(wc).end_cell());
+}
+() get_jetton_data() method_id {
+  var (s,adm,_) = load_state();
+  return (s,0,adm,begin_cell().end_cell(),begin_cell().end_cell());
+}
