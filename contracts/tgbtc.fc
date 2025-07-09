@@ -8,6 +8,17 @@ const OP_MINT = 1;
 ;; 1 addr   admin
 ;; 2 cell   walletCode
 
+;; Load state from storage
+(int, slice, cell) load_state() {
+    var s = get_data().begin_parse();
+    return (s~load_uint(64), s~load_msg_addr(), s~load_ref());
+}
+
+;; Save state to storage
+() save_state(int sup, slice adm, cell wc) impure {
+    set_data(begin_cell().store_uint(sup, 64).store_slice(adm).store_ref(wc).end_cell());
+}
+
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
     ;; Check if message body is empty
     if (in_msg_body.slice_empty?()) {
@@ -47,17 +58,6 @@ const OP_MINT = 1;
     
     ;; Unknown operation
     throw(0xffff);
-}
-
-;; Load state from storage
-(int, slice, cell) load_state() {
-    var s = get_data().begin_parse();
-    return (s~load_uint(64), s~load_msg_addr(), s~load_ref());
-}
-
-;; Save state to storage
-() save_state(int sup, slice adm, cell wc) impure {
-    set_data(begin_cell().store_uint(sup, 64).store_slice(adm).store_ref(wc).end_cell());
 }
 
 ;; Get method for reading jetton data
