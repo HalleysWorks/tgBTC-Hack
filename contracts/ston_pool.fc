@@ -11,22 +11,6 @@
 ;; 3 uint32 : Mock APY in basis points (e.g. 650 = 6.50%)
 ;; 4 addr   : Admin (for future extensions)
 
-() recv_internal(int msg_value, cell in_full, slice in_body) impure {
-  if (in_body.slice_empty?()) { return (); }
-  int op = in_body~load_uint(32);
-  if (op == 10) { handle_add(in_body, msg_value); }
-  if (op == 11) { handle_remove(in_body); }
-}
-
-() load_state() method_id {
-  slice ds = get_data().begin_parse();
-  int ton_res   = ds~load_uint(64);
-  int tgbtc_res = ds~load_uint(64);
-  int lp_tot    = ds~load_uint(64);
-  int apy       = ds~load_uint(32);
-  slice admin   = ds~load_msg_addr();
-  return (ton_res, tgbtc_res, lp_tot, apy, admin);
-}
 
 () save_state(int ton_res, int tgbtc_res, int lp_tot, int apy, slice admin) impure {
   builder b = begin_cell();
@@ -38,7 +22,7 @@
   set_data(b.end_cell());
 }
 
-() sqrt(int x)  {
+(int) sqrt(int x)  {
   if (x <= 0) { return 0; }
   int z = (x + 1) / 2;
   int y = x;
@@ -48,6 +32,7 @@
   }
   return y;
 }
+
 (int) mint_lp(int added_ton, int added_tgbtc, int ton_res, int tgbtc_res, int lp_tot) {
     if (lp_tot == 0) {
         return sqrt(added_ton * added_tgbtc);
@@ -57,6 +42,16 @@
     return min(share_ton, share_tgbtc);
 }
 
+
+(int, int, int, int, slice) load_state() method_id {
+  slice ds = get_data().begin_parse();
+  int ton_res   = ds~load_uint(64);
+  int tgbtc_res = ds~load_uint(64);
+  int lp_tot    = ds~load_uint(64);
+  int apy       = ds~load_uint(32);
+  slice admin   = ds~load_msg_addr();
+  return (ton_res, tgbtc_res, lp_tot, apy, admin);
+}
 
 () handle_add(slice in_body, int msg_value) impure {
   in_body~load_uint(32);  ;; skip op
@@ -93,7 +88,13 @@
   );
 }
 
-() get_pool_info() method_id {
+() recv_internal(int msg_value, cell in_full, slice in_body) impure {
+  if (in_body.slice_empty?()) { return (); }
+  int op = in_body~load_uint(32);
+  if (op == 10) { handle_add(in_body, msg_value); }
+  if (op == 11) { handle_remove(in_body); }
+}
+(int, int, int, int) get_pool_info() method_id {
   var (ton_res, tgbtc_res, lp_tot, apy, _) = load_state();
   return (ton_res, tgbtc_res, lp_tot, apy);
 }
