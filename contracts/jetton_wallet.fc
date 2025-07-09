@@ -1,8 +1,19 @@
-#include "./stdlib.fc" ;
-;; Storage: balance:uint64 owner:addr master:addr
-() recv_internal(int,cell,slice){}
+#include "./stdlib.fc";
 
-() get_wallet_data() method_id {
-  var s = get_data().begin_parse();
-  return (s~load_uint(64), s~load_msg_addr(), s~load_msg_addr());
+;; ---------- Constants (compile-time) ----------
+const OP_TRANSFER = 0xf8a7ea5;
+const OP_INTERNAL_TRANSFER = 0x178d4519;  
+const OP_BURN = 0x595f07bc;
+
+;; ---------- Storage layout ----------
+;; balance:uint64  owner:addr  master:addr
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    ;; For demo, just ignore messages
+    return ();
+}
+
+(int, slice, slice) get_wallet_data() method_id {
+    var s = get_data().begin_parse();
+    return (s~load_uint(64), s~load_msg_addr(), s~load_msg_addr());
 }
