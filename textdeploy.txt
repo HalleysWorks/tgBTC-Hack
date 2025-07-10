@@ -1,0 +1,279 @@
+
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployDedustPool --testnet
+Using file: deployDedustPool
+? Which wallet are you using? TON Connect compatible mobile wallet (example:
+WLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQBZMw7MrjuE-RIVXA3WX4Su6eW12m5LCLsMCeynKANVadB3","amount":"50000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckECFAEAAX4AAgE0ARMBFP8A9KQT9LzyyAsCAgFiAw4CAssEBQA90IMcAkl8D4NMfIcAKlVRiBfAZkTPiwAuTAfAakVvigIBIAYJAgH0BwgAPQgwQGSMHDgIKSrACGSXLmbMFRwEKkEWKCrAAHobCGAADRfBcjJ7VSACAUgKDQIBIAsMADEIMAAlV8DqPAW4FFEqFipBFAjqAGpBLYIgAFEMDHTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwF4ACDQx0x8x+kDTPzCCAe4t7UPYIsAAkl8H4FNFqCOpBFNGqCSpBFFhoVBWoVA2oRA1AvAXgBDIywVYzxYB+gLJgED7AIAgEgDxAAGb+IzBAPcW9qHsCi+CQCASAREgAVuucYIB7i3tQ9gwgAIbri3tRNDTP9M/0z/TH/pAMIAHsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHCgBmZ0kMV5MRjsJJ6mjEIll/7R1V/DKT4nYGfjgjqovtLEHz5lIk="}],"valid_until":1752175768128,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '0'
+qAGpBLYIgAFEMDHTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwF4ACDQx0x8x+kDTPzCCAe4t7UPYIsAAkl8H4FNFqCOpBFNGqCSpBFFhoVBWoVA2oRA1AvAXgBDIywVYzxYB+gLJgED7AIAgEgDxAAGb+IzBAPcW9qHsCi+CQCASAREgAVuucYIB7i3tQ9gwgAIbri3tRNDTP9M/0z/TH/pAMIAHsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHCgBmZ0kMV5MRjsJJ6mjEIll/7R1V/DKT4nYGfjgjqovtLEHz5lIk="}],"valid_until":1752175768128,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '0'
+}
+[TON_CONNECT_SDK] Wallet message received: {       
+  result: 'te6ccgECGQEAAjsAAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHAUmAAAAAKo2G3a9K+cXM/a7VzWowT5wkoMKtNT3u73RS+jM9jW93a+uckIy6hZYT+kB/CGGNJZoxoxsAcdWBiGs+WqRHCAoAICCg7DyG0DAwQAAAFpYgAsmYdmVx3CfIkKrgbrL8JXdPLa7TclhF2GBPZTlAGqtKAX14QAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAHsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHCgBmZ0kMV5MRjsJJ6mjEIll/7R1V/DKT4nYGfjgjqovtLEAIBYgkKAgLLCwwCASAVFgA90IMcAkl8D4NMfIcAKlVRiBfAZkTPiwAuTAfAakVvigIBIA0OAgH0DxACAUgREgA9CDBAZIwcOAgpKsAIZJcuZswVHAQqQRYoKsAAehsIYAANF8FyMntVIAIBIBMUAINDHTHzH6QNM/MIIB7i3tQ9giwACSXwfgU0WoI6kEU0aoJKkEUWGhUFahUDahEDUC8BeAEMjLBVjPFgH6AsmAQPsAgAMQgwACVXwOo8BbgUUSoWKkEUCOoAakEtgiAAUQwMdMfMfpAMdM/0z8wggHuLe1D2FR2VFNl8BhQV6BQNaAFoBA0AvAXgABm/iMwQD3Fvah7AovgkAgEgFxgAFbrnGCAe4t7UPYMIACG64t7UTQ0z/TP9M/0x/6QDCA==',
+  id: 0
+}
+Sent transaction
+Contract deployed at address kQBZMw7MrjuE-RIVXA3WX4Su6eW12m5LCLsMCeynKANVaWv9
+You can view it at https://testnet.tonscan.org/address/kQBZMw7MrjuE-RIVXA3WX4Su6eW12m5LCLsMCeynKANVaWv9
+DeDust deployed at: EQBZMw7MrjuE-RIVXA3WX4Su6eW12m5LCLsMCeynKANVadB3            npx blueprint build   
+? Select contract to use 
+? Select contract to use StonPool
+Build script running, compiling StonPool
+🔧 Using func version 0.4.6...
+
+✅ Compiled successfully! Cell BOC result:
+
+{
+  "hash": "7adca5882f8a4f21244c0fe38625bc99b631c58c40d366bb14729ddbbfe6b548",
+  "hashBase64": "etyliC+KTyEkTA/jhiW8mbYxxYxA02a7FHKd27/mtUg=",
+  "hex": "b5ee9c7241021201000135000114ff00f4a413f4bcf2c80b01020162020d0202cb03040039d0c4831c02456f834c7c87002a51480fc06644cb8b002e4bc06a44c38a02012005080201f40607000d17c172327b5520003d083040648c1c3808292ac00864972e66cc151c042a4116282ac0007a1b0860020148090c0201200a0b00310830002557c0ea3c05f814512a162a411408ea006a412d8220004f0c34c7cc7e900c74cff4cfcc20807b8b7b50f6151d9514d97c061415e8140d680168040d00bc05a000814d31f31fa40d33f308201ee2ded43d822c000925f07e05345a823a9045346a824a9045161a15056a15036a1103502f0168010c8cb0558cf1601fa02c98040fb0080201200e0f0019bf88cc100f716f6a1ec0a2f82402012010110015bae718201ee2ded43d83080021bae2ded44d0d33fd33fd33fd31ffa40308b59dcfd1"  
+}
+
+✅ Wrote compilation artifact to build\StonPool.compiled.json
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployStonPool   --testnet --tonconnect
+Using file: deployStonPool
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQDQAps_kD0OMEvI2Vkb1-m2FtI3Qx50zdO2YEbYvlVZKAEy","amount":"50000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckECFAEAAX8AAgE0ARMBFP8A9KQT9LzyyAsCAgFiAw4CAssEBQA50MSDHAJFb4NMfIcAKlFID8BmRMuLAC5LwGpEw4oCASAGCQIB9AcIAA0XwXIye1UgAD0IMEBkjBw4CCkqwAhkly5mzBUcBCpBFigqwAB6GwhgAgFICg0CASALDAAxCDAAJVfA6jwF+BRRKhYqQRQI6gBqQS2CIABPDDTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwFoACBTTHzH6QNM/MIIB7i3tQ9giwACSXwfgU0WoI6kEU0aoJKkEUWGhUFahUDahEDUC8BaAEMjLBVjPFgH6AsmAQPsAgCASAPEAAZv4jMEA9xb2oewKL4JAIBIBESABW65xggHuLe1D2DCAAhuuLe1E0NM/0z/TP9Mf+kAwgAhYAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADMzpIYryYjHYST1NGIRLL/2jqr+GUnxOwM/HBHVRfaWLouCMU"}],"valid_until":1752176309999,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '1'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  error: { code: 300, message: 'User declined the transaction' },
+  id: 1
+}
+UserRejectsError: [TON_CONNECT_SDK_ERROR] UserRejectsError: User rejects the action in the wallet.    
+User declined the transaction
+    at SendTransactionParser.parseAndThrowError (D:\hack-tgbtc\tgBTC-Hack\node_modules\@tonconnect\sdk\src\parsers\send-transaction-parser.ts:38:15)     
+    at TonConnect.<anonymous> (D:\hack-tgbtc\tgBTC-Hack\node_modules\@tonconnect\sdk\src\ton-connect.ts:254:42)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\hack-tgbtc\tgBTC-Hack\node_modules\node_modules\tslib\tslib.es6.js:71:58)        
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployStonPool   --testnet --tonconnect
+Using file: deployStonPool
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+EU0aoJKkEUWGhUFahUDahEDUC8BaAEMjLBVjPFgH6AsmAQPsAgCASAPEAAZv4jMEA9xb2oewKL4JAIBIBESABW65xggHuLe1D2DCAAhuuLe1E0NM/0z/TP9Mf+kAwgAhYAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADMzpIYryYjHYST1NGIRLL/2jqr+GUnxOwM/HBHVRfaWLouCMU"}],"valid_until":1752176326761,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '2'
+AAFpYgBoAU2fyB6HGCXkbKyN6/TbC2kboY86ZunbMCNsXyqslCAX14QAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAIWAGZnSQxXkxGOwknqaMQiWX/tHVX8MpPidgZ+OCOqi+0sQAzM6SGK8mIx2Ek9TRiESy/9o6q/hlJ8TsDPxwR1UX2liAgFiCQoCAssLDAIBIBUWADnQxIMcAkVvg0x8hwAqUUgPwGZEy4sALkvAakTDigIBIA0OAgH0DxACAUgREgANF8FyMntVIAA9CDBAZIwcOAgpKsAIZJcuZswVHAQqQRYoKsAAehsIYAIBIBMUAIFNMfMfpA0z8wggHuLe1D2CLAAJJfB+BTRagjqQRTRqgkqQRRYaFQVqFQNqEQNQLwFoAQyMsFWM8WAfoCyYBA+wCAAxCDAAJVfA6jwF+BRRKhYqQRQI6gBqQS2CIABPDDTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwFoAAZv4jMEA9xb2oewKL4JAIBIBcYABW65xggHuLe1D2DCAAhuuLe1E0NM/0z/TP9Mf+kAwg=',
+  id: 2
+}
+Sent transaction
+Contract deployed at address kQDQAps_kD0OMEvI2Vkb1-m2FtI3Qx50zdO2YEbYvlVZKLq4
+You can view it at https://testnet.tonscan.org/address/kQDQAps_kD0OMEvI2Vkb1-m2FtI3Qx50zdO2YEbYvlVZKLq4
+✅ StonPool deployed at: EQDQAps_kD0OMEvI2Vkb1-m2FtI3Qx50zdO2YEbYvlVZKAEy
+Testnet Explorer: https://testnet.tonscan.org/address/EQDQAps_kD0OMEvI2Vkb1-m2FtI3Qx50zdO2YEbYvlVZKnpx blueprint build
+? Select contract to use 
+? Select contract to use MegatonPool
+Build script running, compiling MegatonPool
+🔧 Using func version 0.4.6...
+
+✅ Compiled successfully! Cell BOC result:
+
+{
+  "hash": "372d304dd779e435c37df374b39ba256421661a5e4f577fa61bfdc89573538a2",
+  "hashBase64": "Ny0wTdd55DXDffN0s5uiVkIWYaXk9Xf6Yb/ciVc1OKI=",
+  "hex": "b5ee9c7241021201000135000114ff00f4a413f4bcf2c80b01020162020d0202cb03040039d0c4831c02456f834c7c87002a51480fc06644cb8b002e4bc06a44c38a02012005080201f40607003d083040648c1c3808292ac00864972e66cc151c042a4116282ac0007a1b0860000d17c172327b5520020148090c0201200a0b00310830002557c0ea3c05b814512a162a411408ea006a412d8220004f0c34c7cc7e900c74cff4cfcc20807b8b7b50f6151d9514d97c061415e8140d680168040d00bc05e000814d31f31fa40d33f308201ee2ded43d822c000925f07e05345a823a9045346a824a9045161a15056a15036a1103502f0178010c8cb0558cf1601fa02c98040fb0080201200e0f0019bf88cc100f716f6a1ec0a2f82402012010110015bae718201ee2ded43d83080021bae2ded44d0d33fd33fd33fd31ffa40308956a2bcb"
+}
+
+✅ Wrote compilation artifact to build\MegatonPool.compiled.json
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployMegatonPool --testnet --tonconnect 
+Using file: deployMegatonPool
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQB52aT77-_AesFVKmM6Wb7iUkBN-rCBILfURFSQwVVsShc_","amount":"50000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckECFAEAAX8AAgE0ARMBFP8A9KQT9LzyyAsCAgFiAw4CAssEBQA50MSDHAJFb4NMfIcAKlFID8BmRMuLAC5LwGpEw4oCASAGCQIB9AcIAD0IMEBkjBw4CCkqwAhkly5mzBUcBCpBFigqwAB6GwhgAA0XwXIye1UgAgFICg0CASALDAAxCDAAJVfA6jwFuBRRKhYqQRQI6gBqQS2CIABPDDTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwF4ACBTTHzH6QNM/MIIB7i3tQ9giwACSXwfgU0WoI6kEU0aoJKkEUWGhUFahUDahEDUC8BeAEMjLBVjPFgH6AsmAQPsAgCASAPEAAZv4jMEA9xb2oewKL4JAIBIBESABW65xggHuLe1D2DCAAhuuLe1E0NM/0z/TP9Mf+kAwgAhYAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADMzpIYryYjHYST1NGIRLL/2jqr+GUnxOwM/HBHVRfaWI5wuLy"}],"valid_until":1752176421950,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '3'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgECGQEAAjwAAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHAXJQAAAASnBb7g1GTR0Az3nEMfxCLGAkZPxWN6FyB7I0o7LcBBN1uM3qvDo4GOZVsqKEtqGJ2/+EhRTl/oQkjG0jDLyoxA4AICCg7DyG0DAwQAAAFpYgA87NJ99/fgPWCqlTGdLN9xKSAm/VhAkFvqIipIYKq2JSAX14QAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAIWAGZnSQxXkxGOwknqaMQiWX/tHVX8MpPidgZ+OCOqi+0sQAzM6SGK8mIx2Ek9TRiESy/9o6q/hlJ8TsDPxwR1UX2liAgFiCQoCAssLDAIBIBUWADnQxIMcAkVvg0x8hwAqUUgPwGZEy4sALkvAakTDigIBIA0OAgH0DxACAUgREgA9CDBAZIwcOAgpKsAIZJcuZswVHAQqQRYoKsAAehsIYAANF8FyMntVIAIBIBMUAIFNMfMfpA0z8wggHuLe1D2CLAAJJfB+BTRagjqQRTRqgkqQRRYaFQVqFQNqEQNQLwF4AQyMsFWM8WAfoCyYBA+wCAAxCDAAJVfA6jwFuBRRKhYqQRQI6gBqQS2CIABPDDTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwF4AAZv4jMEA9xb2oewKL4JAIBIBcYABW65xggHuLe1D2DCAAhuuLe1E0NM/0z/TP9Mf+kAwg=',
+  id: 3
+}
+Sent transaction
+Contract deployed at address kQB52aT77-_AesFVKmM6Wb7iUkBN-rCBILfURFSQwVVsSqy1
+You can view it at https://testnet.tonscan.org/address/kQB52aT77-_AesFVKmM6Wb7iUkBN-rCBILfURFSQwVVsSqy1
+e wallet (example: Tonkeeper)
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Error: BitBuilder overflow
+    at BitBuilder.writeUint (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\core\dist\boc\BitBuilder.js:96:19)
+    at BitBuilder.writeBuffer (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\core\dist\boc\BitBuilder.js:69:22)
+    at BitBuilder.writeAddress (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\core\dist\boc\BitBuilder.js:245:18)
+    at Builder.storeAddress (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\core\dist\boc\Builder.js:237:20)
+    at vaultConfigToCell (D:\hack-tgbtc\tgBTC-Hack\wrappers\Vault.ts:20:10)   
+    at Function.createFromConfig (D:\hack-tgbtc\tgBTC-Hack\wrappers\Vault.ts:37:22)
+    at Object.run (D:\hack-tgbtc\tgBTC-Hack\scripts\deployVault.ts:17:15)
+    at async run (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\blueprint\dist\cli\run.js:26:5)        
+    at async main (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\blueprint\dist\cli\cli.js:113:5)      
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployVaTonkeeper)
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Error: BitBuilder overflow
+    at BitBuilder.writeUint (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\core\dist\boc\BitBuilder.js:96:19)    
+    at BitBuilder.writeBuffer (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\core\dist\boc\BitBuilder.js:69:22)  
+    at BitBuilder.writeAddress (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\core\dist\boc\BitBuilder.js:245:18)
+    at Builder.storeAddress (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\core\dist\boc\Builder.js:237:20)      
+    at vaultConfigToCell (D:\hack-tgbtc\tgBTC-Hack\wrappers\Vault.ts:27:10)
+    at Function.createFromConfig (D:\hack-tgbtc\tgBTC-Hack\wrappers\Vault.ts:39:22)
+    at Object.run (D:\hack-tgbtc\tgBTC-Hack\scripts\deployVault.ts:10:25)
+    at async run (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\blueprint\dist\cli\run.js:26:5)
+    at async main (D:\hack-tgbtc\tgBTC-Hack\node_modulenpx blueprint build                                    
+? Select contract to use 
+? Select contract to use Vault
+Build script running, compiling Vault
+🔧 Using func version 0.4.6...
+
+✅ Compiled successfully! Cell BOC result:
+
+{
+  "hash": "6510a2ab45047805544f3f1594cfcdff39993e51bc077740a84cf3251ff6b25e",
+  "hashBase64": "ZRCiq0UEeAVUTz8VlM/N/zmZPlG8B3dAqEzzJR/2sl4=",
+  "hex": "b5ee9c724101100100ff000114ff00f4a413f4bcf2c80b01020162020d0202cb0304008dd0831c0270c3434c0cc7e900c005c3c05b80c74c7fe9008b000665b08b4cff4cfcc3c05b808b000a5db08b4cfcc3c05f816f000e720840ee6b2802fbcb812bc06380c2103fcbc202012005080201f4060700370cbc0694de2820840ee6b2802a41141e281416281415a8110c3c06e000613c068830803cb81254d9ea086a4114da2a08aa41146068541e2842284415fc06e0043232c15633c5807e80b260103ec020020148090a0001480201200b0c00253b513434cff4cffe903e903e903e9034cfcc20000d17c1f2327b55200201200e0f0011bc40b780d2f82b7814000dbf13bf80d3630cabc844bd"
+}
+
+✅ Wrote compilation artifact to build\Vault.compiled.json
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployVault --testnet --tonconnect
+Using file: deployVault
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQDFPfhWh9t1r3IAnpsqXd-zsX71t22e_Lw0x1trh2F1USk2","amount":"100000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckECFQEAAa0AAgE0AREBFP8A9KQT9LzyyAsCAgFiAw4CAssEBQCN0IMcAnDDQ0wMx+kAwAXDwFuAx0x/6QCLAAZlsItM/0z8w8BbgIsACl2wi0z8w8BfgW8ADnIIQO5rKAL7y4ErwGOAwhA/y8ICASAGCQIB9AcIADcMvAaU3igghA7msoAqQRQeKBQWKBQVqBEMPAbgAGE8BogwgDy4ElTZ6ghqQRTaKgiqQRRgaFQeKEIoRBX8BuAEMjLBVjPFgH6AsmAQPsAgAgFICgsAAUgCASAMDQAlO1E0NM/0z/6QPpA+kD6QNM/MIAANF8HyMntVIAIBIA8QABG8QLeA0vgreBQADb8Tv4DTYwwDABITFAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIWAGZnSQxXkxGOwknqaMQiWX/tHVX8MpPidgZ+OCOqi+0sQA0AKbP5A9DjBLyNlZG9fpthbSN0MedM3TtmBG2L5VWSiAIWACyZh2ZXHcJ8iQquBusvwld08trtNyWEXYYE9lOUAaq0wAedmk++/vO7JdHUR9LAvE5hcb9z/BlInFUGEmXZ1KwZAtaOW//AIAICCg7DyG0DAwQAAAFpYgBinvwrQ+2617kAT02VLu/Z2L9627bPfl4aY621w7C6qKAvrwgAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAwAXGBkCAWIJCgICywsMAgEgFRYAjdCDHAJww0NMDMfpAMAFw8BbgMdMf+kAiwAGZbCLTP9M/MPAW4CLAApdsItM/MPAX4FvAA5yCEDuaygC+8uBK8BjgMIQP8vCAgEgDQ4CAfQPEAIBSBESADcMvAaU3igghA7msoAqQRQeKBQWKBQVqBEMPAbgAGE8BogwgDy4ElTZ6ghqQRTaKgiqQRRgaFQeKEIoRBX8BuAEMjLBVjPFgH6AsmAQPsAgAAFIAgEgExQAJTtRNDTP9M/+kD6QPpA+kDTPzCAADRfB8jJ7VSAAEbxAt4DS+Ct4FAANvxO/gNNjDAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIWAGZnSQxXkxGOwknqaMQiWX/tHVX8MpPidgZ+OCOqi+0sQA0AKbP5A9DjBLyNlZG9fpthbSN0MedM3TtmBG2L5VWSiAIWACyZh2ZXHcJ8iQquBusvwld08trtNyWEXYYE9lOUAaq0wAedmk++/vwHrBVSpjOlm+4lJATfqwgSC31ERUkMFVbEq',
+  id: 4
+}
+Sent transaction
+Contract deployed at address kQDFPfhWh9t1r3IAnpsqXd-zsX71t22e_Lw0x1trh2F1UZK8
+You can view it at https://testnet.tonscan.org/address/kQDFPfhWh9t1r3IAnpsqXd-zsX71t22e_Lw0x1trh2F1UZK8
+✅ Vault deployed at: EQDFPfhWh9t1r3IAnpsqXd-zsX71t22e_Lw0x1trh2F1USk2
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint build
+? Select contract to use 
+? Select contract to use Tgbtc
+Build script running, compiling Tgbtc
+🔧 Using func version 0.4.6...
+
+✅ Compiled successfully! Cell BOC result:
+
+{
+  "hash": "9ce030eff70526e947ecd9dae3f6d67e9317bf751d6112db7020bf9ff93694b5",
+  "hashBase64": "nOAw7/cFJulH7Nna4/bWfpMXv3UdYRLbcCC/n/k2lLU=",
+  "hex": "b5ee9c7241010801007a000114ff00f4a413f4bcf2c80b0102016202070202cb03040065d1b088831c02456f8007434c0cc7e900c0074c7c0700063853e900c74cfcc3c05945071c17cb86440a800bc05f816e103fcbc2020273050600133b513434cffe90350c20001700b232cfc073c5b3327b55200019a13c5be02c60e1919391922047b4753118"
+}
+
+✅ Wrote compilation artifact to build\Tgbtc.compiled.json
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployTgbtc --testnet --tonconnect
+Using file: deployTgbtc
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Error: ENOENT: no such file or directory, open 'D:\hack-tgbtc\tgBTC-Hack\build\JettonWallet.tvc'
+    at Object.openSync (node:fs:573:18)      
+    at Object.readFileSync (node:fs:452:35)  
+    at Object.run (D:\hack-tgbtc\tgBTC-Hack\scripts\deployTgbtc.ts:12:26)
+    at async run (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\blueprint\dist\cli\run.js:26:5)
+    at async main (D:\hack-tgbtc\tgBTC-Hack\node_modules\@ton\blueprint\dist\cli\cli.js:113:5) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\hack-tgbtc\\tgBTC-Hack\\build\\JettonWallet.tvc'
+}
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployAll --testnet --tonconnect
+Using file: deployAll
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQDw6gkeHz_I7v03YUQLfqvBADBW6ADTREMN6guBX_bvp4UO","amount":"100000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckEBDgEA0gACATQBCQEU/wD0pBP0vPLICwICAWIDCAICywQFAGXRsIiDHAJFb4AHQ0wMx+kAwAdMfAcABjhT6QDHTPzDwFlFBxwXy4ZECoALwF+BbhA/y8ICAnMGBwATO1E0NM/+kDUMIAAXALIyz8BzxbMye1UgABmhPFvgLGDhkZORkiBHAVMAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxAKART/APSkE/S88sgLCwIBYgwNAAbQXwQAGaD2BdqJoaZ/9IH0gGH2B0+i"}],"valid_until":1752178017381,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '5'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgECEwEAAY8AAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHAdYQAAAAarvJjEv/Gc5QwKld4ULPhPr0KmmgjgoPT3LQK3OOdfUTnozlwCjpcEAgSgsB3TPY086jR21mSRLpXf/QULThHAIAICCg7DyG0DAwQAAAFpYgB4dQSPD5/kd36bsKIFv1XggBgrdABpoiGG9QXAr/t306AvrwgAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAVMAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxAPAgFiCQoCAssLDAAZoTxb4Cxg4ZGTkZIgRwBl0bCIgxwCRW+AB0NMDMfpAMAHTHwHAAY4U+kAx0z8w8BZRQccF8uGRAqAC8BfgW4QP8vCAgJzDQ4AEztRNDTP/pA1DCAAFwCyMs/Ac8WzMntVIAEU/wD0pBP0vPLICxACAWIREgAG0F8EABmg9gXaiaGmf/SB9IBh',
+  id: 5
+}
+Sent transaction
+Awaiting contract deployment... [Attempt 1/20
+Awaiting contract deployment... [Attempt 2/20
+Awaiting contract deployment... [Attempt 3/20
+Awaiting contract deployment... [Attempt 4/20
+Awaiting contract deployment... [Attempt 5/20
+Contract deployed at address kQDw6gkeHz_I7v03YUQLfqvBADBW6ADTREMN6guBX_bvpz6E
+You can view it at https://testnet.tonscan.org/address/kQDw6gkeHz_I7v03YUQLfqvBADBW6ADTREMN6guBX_bvpz6E
+50000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckEBBgEAeAACATQBBQEU/wD0pBP0vPLICwICAWIDBAAG0F8EABmg9gXaiaGmf/SB9IBhAJUAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADw6gkeHz/I7v03YUQLfqvBADBW6ADTREMN6guBX/bvp629M4K"}],"valid_until":1752178047054,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '6'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+50000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckEBBgEAeAACATQBBQEU/wD0pBP0vPLICwICAWIDBAAG0F8EABmg9gXaiaGmf/SB9IBhAJUAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADw6gkeHz/I7v03YUQLfqvBADBW6ADTREMN6guBX/bvp629M4K"}],"valid_until":1752178047054,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '6'
+}
+[TON_CONNECT_SDK] Wallet message received: {        
+  result: 'te6ccgECCwEAATUAAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHAdfwAAAAeL1ZQaHHEQ8xwHj  result: 'te6ccgECCwEAATUAAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHAdfwAAAAeL1ZQaHHEQ8xwHjea96iUvHnJ6+Yjhpwn7pZalP3eWVv1tqoBwIV+9sA1H/AAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAJUAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADw6gkeHz/I7v03YUQLfqvBADBW6ADTREMN6guBX/bvp4CAWIJCgAG0F8EABmg9gXaiaGmf/SB9IBh',    
+  id: 6
+}
+Sent transaction
+Awaiting contract deployment... [Attempt 1/20Awaiting contract deployment... [Attempt 2/20Awaiting contract deployment... [Attempt 3/20Awaiting contract deployment... [Attempt 4/20Awaiting contract deployment... [Attempt 5/20Awaiting contract deployment... [Attempt 6/20Contract deployed at address kQDEVjrI-RUatYT_uua8tmjxLD_rAILn5lbaEQSyb1t_ewyc
+You can view it at https://testnet.tonscan.org/address/kQDEVjrI-RUatYT_uua8tmjxLD_rAILn5lbaEQSyb1t_ewyc
+✅ JettonWallet at: EQDEVjrI-RUatYT_uua8tmjxLD_rAILn5lbaEQSyb1t_e7cW
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint build
+? Select contract to use 
+? Select contract to use Tgbtc
+Build script running, compiling Tgbtc
+🔧 Using func version 0.4.6...
+
+✅ Compiled successfully! Cell BOC result:
+
+{
+  "hash": "9ce030eff70526e947ecd9dae3f6d67e9317bf751d6112db7020bf9ff93694b5",
+  "hashBase64": "nOAw7/cFJulH7Nna4/bWfpMXv3UdYRLbcCC/n/k2lLU=",
+  "hex": "b5ee9c7241010801007a000114ff00f4a413f4bcf2c80b0102016202070202cb03040065d1b088831c02456f8007434c0cc7e900c0074c7c0700063853e900c74cfcc3c05945071c17cb86440a800bc05f816e103fcbc2020273050600133b513434cffe90350c20001700b232cfc00e1919391922047b4753118"     
+}
+
+✅ Wrote compilation artifact to build\Tgbtc.compiled.json
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run deployTgbtc --testnet --tonconnect      
+Using file: deployTgbtc      
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA       
+Error: ENOENT: no such file or directory, open 'D:\hack-tgbtc\tgBTC-Hack\build\JettonWallet.tvc'
+  syscall: 'open',
+  path: 'D:\\hack-tgbtc\\tgBTC-Hack\\build\\JettonWallet.tvc'
+}
+npx blueprint run deployTgbtc --testnet --tonconnect
+Using file: deployTgbtc
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQDw6gkeHz_I7v03YUQLfqvBADBW6ADTREMN6guBX_bvp4UO","amount":"100000000","payload":"te6cckEBAQEAAgAAAEysuc0="}],"valid_until":1752178319649,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'  
+  ],
+  id: '7'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgEBBQEAuwABRYgBmZ0kMV5MRjsJJ6mjEIll/7R1V/DKT4nYGfjgjqovtLAMAQGhc2lnbn////1ocB6PAAAACKETV58X6LjoaPS6mTTJOI0UlwsrCzm1PirD8gotV9T12huK39AEWHxF8rulUtsk807ZbNHiv5lfBOeDVqz/9MEgAgIKDsPIbQMDBAAAAGhiAHh1BI8Pn+R3fpuwogW/VeCAGCt0AGmiIYb1BcCv+3fToC+vCAAAAAAAAAAAAAAAAAAA',
+  id: 7
+}
+Sent transaction
+Contract deployed at address kQDw6gkeHz_I7v03YUQLfqvBADBW6ADTREMN6guBX_bvpz6E
+You can view it at https://testnet.tonscan.org/address/kQDw6gkeHz_I7v03YUQLfqvBADBW6ADTREMN6guBX_bvpz6E
+✅ tgBTC root deployed at: EQDw6gkeHz_I7v03YUQLfqvBADBW6ADTREMN6guBX_bvp4UO
+PS D:\hack-tgbtc\tgBTC-Hack>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

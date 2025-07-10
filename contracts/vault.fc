@@ -121,17 +121,18 @@
     64);
 }
 
-;; ────────── Getter for balances ──────────
-;; Returns (total TON balance, total tgBTC balance)
-[int, int] get_balance() method_id {
-    var (ton_bal, tgbtc_bal, _, _, _, _, _) = load_state();
-    return [ ton_bal, tgbtc_bal ];
+;; ────────── Getter for state balances ──────────
+;; Returns (total TON balance, total tgBTC balance as an int)
+;; ────────── Getter for state balances ──────────
+;; Returns (total TON, total tgBTC)
+[int, int] get_state_balances() method_id {
+  var (ton_bal, tgbtc_bal, _, _, _, _, _) = load_state();
+  return [ ton_bal, tgbtc_bal ];
 }
 
 
 
-
-() get_total_shares() method_id {
+(int) get_total_shares() method_id {
   var (_,_,_,_,_,_,tot) = load_state();
   return tot;
 }

@@ -1,22 +1,37 @@
-import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
+import { Address, Cell, beginCell, contractAddress, Contract, ContractProvider, Sender, SendMode } from '@ton/core';
 
-export type JettonWalletConfig = {};
+export type JettonWalletConfig = {
+    balance: bigint;
+    owner: Address;
+    master: Address;
+};
 
 export function jettonWalletConfigToCell(config: JettonWalletConfig): Cell {
-    return beginCell().endCell();
+    return beginCell()
+        .storeUint(config.balance, 64) // initial balance (usually zero)
+        .storeAddress(config.owner) // owner of this wallet
+        .storeAddress(config.master) // jetton master (token root)
+        .endCell();
 }
 
 export class JettonWallet implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    readonly address: Address;
+    readonly init?: { code: Cell; data: Cell };
 
-    static createFromAddress(address: Address) {
-        return new JettonWallet(address);
+    private constructor(address: Address, init?: { code: Cell; data: Cell }) {
+        this.address = address;
+        this.init = init;
     }
 
-    static createFromConfig(config: JettonWalletConfig, code: Cell, workchain = 0) {
+    static createFromConfig(config: JettonWalletConfig, code: Cell, workchain = 0): JettonWallet {
         const data = jettonWalletConfigToCell(config);
         const init = { code, data };
-        return new JettonWallet(contractAddress(workchain, init), init);
+        const address = contractAddress(workchain, init);
+        return new JettonWallet(address, init);
+    }
+
+    static createFromAddress(address: Address): JettonWallet {
+        return new JettonWallet(address);
     }
 
     async sendDeploy(provider: ContractProvider, via: Sender, value: bigint) {
@@ -25,5 +40,13 @@ export class JettonWallet implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async getWalletData(provider: ContractProvider): Promise<{ balance: bigint; owner: Address; master: Address }> {
+        const res = await provider.get('get_wallet_data', []);
+        const balance = res.stack.readBigNumber();
+        const owner = res.stack.readAddress();
+        const master = res.stack.readAddress();
+        return { balance, owner, master };
     }
 }

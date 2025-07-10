@@ -1,22 +1,32 @@
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
 
-export type MegatonPoolConfig = {};
+export type MegatonPoolConfig = {
+    admin: Address;
+    vault: Address;
+};
 
 export function megatonPoolConfigToCell(config: MegatonPoolConfig): Cell {
-    return beginCell().endCell();
+    return beginCell().storeAddress(config.admin).storeAddress(config.vault).endCell();
 }
 
 export class MegatonPool implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    readonly address: Address;
+    readonly init?: { code: Cell; data: Cell };
+
+    constructor(address: Address, init?: { code: Cell; data: Cell }) {
+        this.address = address;
+        this.init = init;
+    }
 
     static createFromAddress(address: Address) {
         return new MegatonPool(address);
     }
 
-    static createFromConfig(config: MegatonPoolConfig, code: Cell, workchain = 0) {
+    static async createFromConfig(config: MegatonPoolConfig, code: Cell, workchain = 0) {
         const data = megatonPoolConfigToCell(config);
         const init = { code, data };
-        return new MegatonPool(contractAddress(workchain, init), init);
+        const addr = contractAddress(workchain, init);
+        return new MegatonPool(addr, init);
     }
 
     async sendDeploy(provider: ContractProvider, via: Sender, value: bigint) {
@@ -25,5 +35,11 @@ export class MegatonPool implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    // Example getter (if present in your contract)
+    async getAdmin(provider: ContractProvider): Promise<Address> {
+        const res = await provider.get('get_admin', []);
+        return res.stack.readAddress();
     }
 }
