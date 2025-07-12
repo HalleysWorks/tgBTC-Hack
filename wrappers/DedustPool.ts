@@ -1,4 +1,5 @@
-import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
+// wrappers/DeDust.ts
+import { Address, beginCell, Cell, contractAddress, Contract, ContractProvider, Sender, SendMode } from '@ton/core';
 
 export type DeDustConfig = {
     tonReserve: bigint;
@@ -13,7 +14,7 @@ export function dedustConfigToCell(config: DeDustConfig): Cell {
         .storeUint(config.tonReserve, 64) // TON reserve (nanoTON)
         .storeUint(config.tgBtcReserve, 64) // tgBTC reserve (nanoJetton)
         .storeUint(config.totalLp, 64) // Total LP tokens minted
-        .storeUint(BigInt(config.apyBps), 32) // Mock APY in basis points
+        .storeUint(BigInt(config.apyBps), 32) // Mock APY bps
         .storeAddress(config.admin) // Admin address
         .endCell();
 }
@@ -38,7 +39,7 @@ export class DeDust implements Contract {
         return new DeDust(address, init);
     }
 
-    /** Deploy the contract with the given initial balance (e.g., toNano('0.05')) */
+    /** Deploy the contract with the given initial balance */
     async sendDeploy(provider: ContractProvider, via: Sender, value: bigint) {
         await provider.internal(via, {
             value,
@@ -47,28 +48,30 @@ export class DeDust implements Contract {
         });
     }
 
-    /** Call add_liquidity: op = 10, tonAmt and tgBtcAmt in nano units */
+    /** Call add_liquidity: op = 10 */
     async sendAddLiquidity(provider: ContractProvider, via: Sender, tonAmt: bigint, tgBtcAmt: bigint) {
         const body = beginCell()
-            .storeUint(10, 32) // op add_liquidity
-            .storeAddress(via.address!)
+            .storeUint(10, 32) // add_liquidity
+            .storeAddress(via.address!) // user address
             .storeUint(tonAmt, 64)
             .storeUint(tgBtcAmt, 64)
             .endCell();
+
         await provider.internal(via, {
-            value: tonAmt + toNano('0.01'), // include small gas allowance
+            value: tonAmt + toNano('0.01'),
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body,
         });
     }
 
-    /** Call remove_liquidity: op = 11, burnLp in LP tokens */
+    /** Call remove_liquidity: op = 11 */
     async sendRemoveLiquidity(provider: ContractProvider, via: Sender, burnLp: bigint) {
         const body = beginCell()
-            .storeUint(11, 32) // op remove_liquidity
-            .storeAddress(via.address!)
+            .storeUint(11, 32) // remove_liquidity
+            .storeAddress(via.address!) // user address
             .storeUint(burnLp, 64)
             .endCell();
+
         await provider.internal(via, {
             value: toNano('0.01'),
             sendMode: SendMode.PAY_GAS_SEPARATELY,
@@ -76,7 +79,7 @@ export class DeDust implements Contract {
         });
     }
 
-    /** Query the pool info: returns [tonReserve, tgBtcReserve, totalLp, apyBps] */
+    /** Query the pool info: tonReserve, tgBtcReserve, totalLp, apyBps */
     async getPoolInfo(provider: ContractProvider): Promise<{
         tonReserve: bigint;
         tgBtcReserve: bigint;
@@ -84,11 +87,12 @@ export class DeDust implements Contract {
         apyBps: number;
     }> {
         const res = await provider.get('get_pool_info', []);
-        const tonReserve = res.stack.readBigNumber();
-        const tgBtcReserve = res.stack.readBigNumber();
-        const totalLp = res.stack.readBigNumber();
-        const apyBps = Number(res.stack.readNumber());
-        return { tonReserve, tgBtcReserve, totalLp, apyBps };
+        return {
+            tonReserve: res.stack.readBigNumber(),
+            tgBtcReserve: res.stack.readBigNumber(),
+            totalLp: res.stack.readBigNumber(),
+            apyBps: Number(res.stack.readNumber()),
+        };
     }
 
     /** Query the mock APY in basis points */
@@ -98,7 +102,7 @@ export class DeDust implements Contract {
     }
 }
 
-// Helper to convert TON string to bigint
+// Helper: convert TON amount string to nanoTON bigint
 function toNano(ton: string): bigint {
     return BigInt(Math.floor(Number(ton) * 1e9));
 }

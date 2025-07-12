@@ -3,136 +3,440 @@
 ;; ────────── Storage layout ──────────
 ;; 0 uint64 : total TON balance (nanoTON)
 ;; 1 uint64 : total tgBTC balance (nanoJetton)
-;; 2 addr   : admin
-;; 3 addr   : STON.fi pool
-;; 4 addr   : DeDust pool
-;; 5 addr   : Megaton pool
+;; 2 addr : admin
+;; 3 addr : STON.fi pool
+;; 4 addr : DeDust pool
+;; 5 addr : Megaton pool
 ;; 6 uint64 : totalShares
-;; 7 cell   : params (unused)
+;; 7 cell : params (unused)
+
+;; ────────── Rebalancing Constants ──────────
+const int REBALANCE_THRESHOLD = 500; ;; 5% threshold for rebalancing
+const int MIN_REBALANCE_INTERVAL = 300; ;; 5 minutes minimum between rebalances (demo)
+const int MAX_ALLOCATION_SINGLE = 7000; ;; 70% max allocation to single pool
+const int MIN_ALLOCATION_SINGLE = 1000; ;; 10% min allocation to single pool
 
 ;; ────────── Forward Declarations ──────────
 () handle_deposit(slice lp, int ton_amt, int btc_amt) impure;
 () handle_withdraw(slice lp, int req) impure;
 () handle_rebalance() impure;
 () send_pool(slice addr, int ton_amt, int btc_amt) impure;
+() rebalance_pools() impure;
+int get_pool_yield(slice pool_addr) impure;
+int should_rebalance() impure;
+() distribute_to_pools(int ton_amt, int btc_amt) impure;
+
+;; ────────── Enhanced State Management ──────────
+(int, int, slice, slice, slice, slice, int, int) load_full_state() {
+    slice ds = get_data().begin_parse();
+    int ton_bal = ds~load_uint(64);
+    int btc_bal = ds~load_uint(64);
+    slice admin = ds~load_msg_addr();
+    slice s1 = ds~load_msg_addr();
+    slice s2 = ds~load_msg_addr();
+    slice s3 = ds~load_msg_addr();
+    int shares = ds~load_uint(64);
+    
+    ;; Load last rebalance time from params cell
+    cell params = ds~load_ref();
+    int last_rebalance = 0;
+    if (~ params.cell_null?()) {
+        slice ps = params.begin_parse();
+        if (ps.slice_bits() >= 64) {
+            last_rebalance = ps~load_uint(64);
+        }
+    }
+    
+    return (ton_bal, btc_bal, admin, s1, s2, s3, shares, last_rebalance);
+}
+
+() save_full_state(int ton_bal, int btc_bal, slice admin, slice s1, slice s2, slice s3, 
+                   int shares, int last_rebalance) impure {
+    ;; Save last rebalance time in params cell
+    cell params = begin_cell()
+        .store_uint(last_rebalance, 64)
+        .end_cell();
+    
+    builder b = begin_cell();
+    b.store_uint(ton_bal, 64)
+     .store_uint(btc_bal, 64)
+     .store_slice(admin)
+     .store_slice(s1)
+     .store_slice(s2)
+     .store_slice(s3)
+     .store_uint(shares, 64)
+     .store_ref(params);
+    set_data(b.end_cell());
+}
 
 ;; ────────── Main Entry Point ──────────
 () recv_internal(int msg_value, cell in_msg_full, slice in_body) impure {
-  if (in_body.slice_empty?()) {
-    ;; bare TON → single-sided deposit
-    slice hdr = in_msg_full.begin_parse();
-    hdr~load_uint(4);               ;; skip flags
-    slice sender = hdr~load_msg_addr();
-    handle_deposit(sender, msg_value, 0);
-    return ();
-  }
-  int op = in_body~load_uint(32);
-  slice sender = in_body~load_msg_addr();
-  if (op == 1) { ;; deposit TON + tgBTC
-    int ton   = in_body~load_uint(64);
-    int tgbtc = in_body~load_uint(64);
-    handle_deposit(sender, ton, tgbtc);
-    return ();
-  }
-  if (op == 2) { ;; withdraw
-    int shares = in_body~load_uint(64);
-    handle_withdraw(sender, shares);
-    return ();
-  }
-  if (op == 3) { ;; rebalance
-    throw_unless(74, msg_value >= 1000000000); ;; ≥0.1 TON gas
-    handle_rebalance();
-    return ();
-  }
-  throw(0xffff);
+    if (in_body.slice_empty?()) {
+        ;; bare TON → single-sided deposit
+        slice hdr = in_msg_full.begin_parse();
+        hdr~load_uint(4); ;; skip flags
+        slice sender = hdr~load_msg_addr();
+        handle_deposit(sender, msg_value, 0);
+        return ();
+    }
+
+    int op = in_body~load_uint(32);
+    slice sender = in_body~load_msg_addr();
+    
+    if (op == 1) { ;; deposit TON + tgBTC
+        int ton = in_body~load_uint(64);
+        int tgbtc = in_body~load_uint(64);
+        handle_deposit(sender, ton, tgbtc);
+        return ();
+    }
+    
+    if (op == 2) { ;; withdraw
+        int shares = in_body~load_uint(64);
+        handle_withdraw(sender, shares);
+        return ();
+    }
+    
+    if (op == 3) { ;; manual rebalance
+        throw_unless(74, msg_value >= 100000000); ;; ≥0.1 TON gas
+        handle_rebalance();
+        return ();
+    }
+    
+    if (op == 4) { ;; auto-rebalance check (can be called by anyone)
+        if (should_rebalance()) {
+            rebalance_pools();
+        }
+        return ();
+    }
+    
+    throw(0xffff);
 }
 
-;; ────────── State Helpers ──────────
-(int, int, slice, slice, slice, slice, int) load_state() {
-  slice ds    = get_data().begin_parse();
-  int ton_bal = ds~load_uint(64);
-  int btc_bal = ds~load_uint(64);
-  slice admin = ds~load_msg_addr();
-  slice s1    = ds~load_msg_addr();
-  slice s2    = ds~load_msg_addr();
-  slice s3    = ds~load_msg_addr();
-  int shares  = ds~load_uint(64);
-  return (ton_bal, btc_bal, admin, s1, s2, s3, shares);
+;; ────────── Core Rebalancing Logic ──────────
+() handle_rebalance() impure {
+    var (tb, bb, adm, p1, p2, p3, tot, last_reb) = load_full_state();
+    
+    ;; Check if enough time has passed since last rebalance
+    int current_time = now();
+    throw_unless(75, current_time - last_reb >= MIN_REBALANCE_INTERVAL);
+    
+    ;; Execute rebalancing
+    rebalance_pools();
+    
+    ;; Update last rebalance time
+    save_full_state(tb, bb, adm, p1, p2, p3, tot, current_time);
 }
 
-() save_state(int ton_bal, int btc_bal,
-              slice admin, slice s1, slice s2, slice s3,
-              int shares) impure {
-  builder b = begin_cell();
-  b.store_uint(ton_bal,64)
-   .store_uint(btc_bal,64)
-   .store_slice(admin)
-   .store_slice(s1)
-   .store_slice(s2)
-   .store_slice(s3)
-   .store_uint(shares,64)
-   .store_ref(begin_cell().end_cell()); ;; params
-  set_data(b.end_cell());
+int should_rebalance() impure {
+    var (tb, bb, adm, p1, p2, p3, tot, last_reb) = load_full_state();
+    
+    ;; Check time constraint
+    int current_time = now();
+    if (current_time - last_reb < MIN_REBALANCE_INTERVAL) {
+        return 0;
+    }
+    
+    ;; Check if there's enough value to rebalance
+    int total_value = tb + bb;
+    if (total_value < 1000000000) { ;; Less than 1 TON
+        return 0;
+    }
+    
+    ;; For demo purposes, always allow rebalancing if time has passed
+    return 1;
+}
+
+() rebalance_pools() impure {
+    var (tb, bb, adm, p1, p2, p3, tot, last_reb) = load_full_state();
+    
+    ;; Get yields from each pool (mock values for demo)
+    int yield1 = get_pool_yield(p1); ;; STON.fi: 650 (6.5%)
+    int yield2 = get_pool_yield(p2); ;; DeDust: 450 (4.5%)
+    int yield3 = get_pool_yield(p3); ;; Megaton: 500 (5.0%)
+    
+    ;; Calculate total value to redistribute
+    int total_value = tb + bb;
+    
+    ;; Determine allocation based on yields
+  int alloc1 = 0;
+int alloc2 = 0; 
+int alloc3 = 0;
+
+    if ((yield1 >= yield2) & (yield1 >= yield3)) {
+        ;; STON.fi has highest yield
+        alloc1 = 6000; ;; 60%
+        if (yield2 >= yield3) {
+            alloc2 = 2500; ;; 25%
+            alloc3 = 1500; ;; 15%
+        } else {
+            alloc2 = 1500; ;; 15%
+            alloc3 = 2500; ;; 25%
+        }
+    } elseif ((yield2 >= yield1) & (yield2 >= yield3)) {
+        ;; DeDust has highest yield
+        alloc2 = 6000; ;; 60%
+        if (yield1 >= yield3) {
+            alloc1 = 2500; ;; 25%
+            alloc3 = 1500; ;; 15%
+        } else {
+            alloc1 = 1500; ;; 15%
+            alloc3 = 2500; ;; 25%
+        }
+    } else {
+        ;; Megaton has highest yield
+        alloc3 = 6000; ;; 60%
+        if (yield1 >= yield2) {
+            alloc1 = 2500; ;; 25%
+            alloc2 = 1500; ;; 15%
+        } else {
+            alloc1 = 1500; ;; 15%
+            alloc2 = 2500; ;; 25%
+        }
+    }
+    
+    ;; Calculate amounts to allocate
+    int amount1 = (total_value * alloc1) / 10000;
+    int amount2 = (total_value * alloc2) / 10000;
+    int amount3 = total_value - amount1 - amount2;
+    
+    ;; Distribute to pools
+    if (amount1 > 0) {
+        send_pool(p1, amount1, 0);
+    }
+    if (amount2 > 0) {
+        send_pool(p2, amount2, 0);
+    }
+    if (amount3 > 0) {
+        send_pool(p3, amount3, 0);
+    }
+    
+    ;; Update last rebalance time
+    int current_time = now();
+    save_full_state(tb, bb, adm, p1, p2, p3, tot, current_time);
+}
+
+int get_pool_yield(slice pool_addr) impure {
+    ;; Mock yield values for demo (in basis points)
+    ;; In real implementation, this would query the pool contracts
+    var (tb, bb, adm, p1, p2, p3, tot, last_reb) = load_full_state();
+    
+    if (equal_slice_bits(pool_addr, p1)) {
+        return 650; ;; STON.fi: 6.5% APY
+    }
+    if (equal_slice_bits(pool_addr, p2)) {
+        return 450; ;; DeDust: 4.5% APY
+    }
+    if (equal_slice_bits(pool_addr, p3)) {
+        return 500; ;; Megaton: 5.0% APY
+    }
+    
+    return 400; ;; Default 4% APY
+}
+
+() distribute_to_pools(int ton_amt, int btc_amt) impure {
+    var (tb, bb, adm, p1, p2, p3, tot, last_reb) = load_full_state();
+    
+    ;; Get current yields
+    int yield1 = get_pool_yield(p1);
+    int yield2 = get_pool_yield(p2);
+    int yield3 = get_pool_yield(p3);
+    
+    ;; Simple distribution based on yields
+    int total_yield = yield1 + yield2 + yield3;
+    
+    int alloc1 = (yield1 * 10000) / total_yield;
+    int alloc2 = (yield2 * 10000) / total_yield;
+    int alloc3 = 10000 - alloc1 - alloc2;
+    
+    ;; Distribute TON
+    int ton1 = (ton_amt * alloc1) / 10000;
+    int ton2 = (ton_amt * alloc2) / 10000;
+    int ton3 = ton_amt - ton1 - ton2;
+    
+    ;; Distribute tgBTC
+    int btc1 = (btc_amt * alloc1) / 10000;
+    int btc2 = (btc_amt * alloc2) / 10000;
+    int btc3 = btc_amt - btc1 - btc2;
+    
+    ;; Send to pools
+    if ((ton1 > 0) | (btc1 > 0)) {
+        send_pool(p1, ton1, btc1);
+    }
+    if ((ton2 > 0) | (btc2 > 0)) {
+        send_pool(p2, ton2, btc2);
+    }
+    if ((ton3 > 0) | (btc3 > 0)) {
+        send_pool(p3, ton3, btc3);
+    }
 }
 
 ;; ────────── Core Logic ──────────
 () handle_deposit(slice lp, int ton_amt, int btc_amt) impure {
-  var (tb, bb, adm, p1, p2, p3, tot) = load_state();
-  int minted = (ton_amt + btc_amt) / 1000000000; ;; 1 share per nano-unit
-  save_state(tb + ton_amt, bb + btc_amt, adm, p1, p2, p3, tot + minted);
+    var (tb, bb, adm, p1, p2, p3, tot, last_reb) = load_full_state();
+    
+    ;; Calculate shares to mint
+    int minted = (ton_amt + btc_amt) / 1000000000; ;; 1 share per nano-unit
+    
+    ;; Distribute to pools based on current yields
+    distribute_to_pools(ton_amt, btc_amt);
+    
+    ;; Update state
+    save_full_state(tb + ton_amt, bb + btc_amt, adm, p1, p2, p3, tot + minted, last_reb);
+    
+    ;; Check if rebalancing is needed
+    if (should_rebalance()) {
+        rebalance_pools();
+    }
 }
 
 () handle_withdraw(slice lp, int req) impure {
-  var (tb, bb, adm, p1, p2, p3, tot) = load_state();
-  throw_unless(73, tot > 0);
-  int out_ton = (tb * req) / tot;
-  int out_btc = (bb * req) / tot;
-  save_state(tb - out_ton, bb - out_btc, adm, p1, p2, p3, tot - req);
-  ;; return TON to lp
-  send_raw_message(
-    begin_cell()
-      .store_uint(0x10,6)
-      .store_slice(lp)
-      .store_coins(out_ton)
-      .end_cell(),
-    64);
-}
-
-() handle_rebalance() impure {
-  ;; stub for demo: do nothing
-  return ();
+    var (tb, bb, adm, p1, p2, p3, tot, last_reb) = load_full_state();
+    throw_unless(73, tot > 0);
+    
+    int out_ton = (tb * req) / tot;
+    int out_btc = (bb * req) / tot;
+    
+    save_full_state(tb - out_ton, bb - out_btc, adm, p1, p2, p3, tot - req, last_reb);
+    
+    ;; return TON to lp
+    send_raw_message(
+        begin_cell()
+            .store_uint(0x10, 6)
+            .store_slice(lp)
+            .store_coins(out_ton)
+            .end_cell(),
+        64
+    );
+    
+    ;; Check if rebalancing is needed after withdrawal
+    if (should_rebalance()) {
+        rebalance_pools();
+    }
 }
 
 () send_pool(slice addr, int ton_amt, int btc_amt) impure {
-  if ((ton_amt == 0) & (btc_amt == 0)) { return (); }
-  send_raw_message(
-    begin_cell()
-      .store_uint(0x10,6)
-      .store_slice(addr)
-      .store_coins(ton_amt)
-      .store_ref(
+    if ((ton_amt == 0) & (btc_amt == 0)) { return (); }
+    
+    send_raw_message(
         begin_cell()
-          .store_uint(10,32)  ;; op add_liquidity
-          .store_uint(0,64)
-          .store_coins(ton_amt)
-          .store_coins(btc_amt)
-          .end_cell())
-      .end_cell(),
-    64);
+            .store_uint(0x10, 6)
+            .store_slice(addr)
+            .store_coins(ton_amt)
+            .store_ref(
+                begin_cell()
+                    .store_uint(10, 32) ;; op add_liquidity
+                    .store_uint(0, 64)
+                    .store_coins(ton_amt)
+                    .store_coins(btc_amt)
+                    .end_cell()
+            )
+            .end_cell(),
+        64
+    );
 }
 
-;; ────────── Getter for state balances ──────────
-;; Returns (total TON balance, total tgBTC balance as an int)
-;; ────────── Getter for state balances ──────────
-;; Returns (total TON, total tgBTC)
+;; ────────── Enhanced Getters for Demo ──────────
 [int, int] get_state_balances() method_id {
-  var (ton_bal, tgbtc_bal, _, _, _, _, _) = load_state();
-  return [ ton_bal, tgbtc_bal ];
+    var (ton_bal, tgbtc_bal, _, _, _, _, _, _) = load_full_state();
+    return [ton_bal, tgbtc_bal];
 }
-
-
 
 (int) get_total_shares() method_id {
-  var (_,_,_,_,_,_,tot) = load_state();
-  return tot;
+    var (_, _, _, _, _, _, tot, _) = load_full_state();
+    return tot;
+}
+
+;; Returns current yields from all three pools
+[int, int, int] get_pool_yields() method_id {
+    var (_, _, _, p1, p2, p3, _, _) = load_full_state();
+    return [get_pool_yield(p1), get_pool_yield(p2), get_pool_yield(p3)];
+}
+
+;; Returns current allocation strategy (in basis points)
+[int, int, int] get_current_allocations() method_id {
+    var (_, _, _, p1, p2, p3, _, _) = load_full_state();
+    
+    int yield1 = get_pool_yield(p1);
+    int yield2 = get_pool_yield(p2);
+    int yield3 = get_pool_yield(p3);
+    
+    ;; Calculate allocations based on yields
+    if ((yield1 >= yield2) & (yield1 >= yield3)) {
+        return [6000, 2500, 1500]; ;; STON.fi highest
+    } elseif ((yield2 >= yield1) & (yield2 >= yield3)) {
+        return [2500, 6000, 1500]; ;; DeDust highest
+    } else {
+        return [1500, 2500, 6000]; ;; Megaton highest
+    }
+}
+
+;; Returns pool addresses for frontend
+[slice, slice, slice] get_pool_addresses() method_id {
+    var (_, _, _, p1, p2, p3, _, _) = load_full_state();
+    return [p1, p2, p3];
+}
+
+;; Returns last rebalance time
+int get_last_rebalance_time() method_id {
+    var (_, _, _, _, _, _, _, last_reb) = load_full_state();
+    return last_reb;
+}
+
+;; Returns whether rebalancing is needed
+int get_rebalance_status() method_id {
+    return should_rebalance();
+}
+
+;; Returns total value locked in the vault
+int get_total_value() method_id {
+    var (tb, bb, _, _, _, _, _, _) = load_full_state();
+    return tb + bb;
+}
+
+;; Returns detailed pool information for frontend
+[int, int, int, int, int, int, int, int, int] get_pool_info() method_id {
+    var (_, _, _, p1, p2, p3, _, _) = load_full_state();
+    
+    int yield1 = get_pool_yield(p1);
+    int yield2 = get_pool_yield(p2);
+    int yield3 = get_pool_yield(p3);
+    
+    ;; Calculate current allocations
+int alloc1 = 0;
+int alloc2 = 0;
+int alloc3 = 0;
+    if ((yield1 >= yield2) & (yield1 >= yield3)) {
+        alloc1 = 6000; alloc2 = 2500; alloc3 = 1500;
+    } elseif ((yield2 >= yield1) & (yield2 >= yield3)) {
+        alloc1 = 2500; alloc2 = 6000; alloc3 = 1500;
+    } else {
+        alloc1 = 1500; alloc2 = 2500; alloc3 = 6000;
+    }
+    
+    return [yield1, yield2, yield3, alloc1, alloc2, alloc3, 
+            should_rebalance(), get_last_rebalance_time(), get_total_value()];
+}
+
+;; ────────── Utility Functions ──────────
+;; int abs(int x) {
+;;     return x < 0 ? -x : x;
+;; }
+
+;; int min(int a, int b) {
+;;     return a < b ? a : b;
+;; }
+
+;; int max(int a, int b) {
+;;     return a > b ? a : b;
+;; }
+
+;; ────────── Backward Compatibility ──────────
+(int, int, slice, slice, slice, slice, int) load_state() {
+    var (tb, bb, adm, p1, p2, p3, tot, _) = load_full_state();
+    return (tb, bb, adm, p1, p2, p3, tot);
+}
+
+() save_state(int ton_bal, int btc_bal, slice admin, slice s1, slice s2, slice s3, int shares) impure {
+    var (_, _, _, _, _, _, _, last_reb) = load_full_state();
+    save_full_state(ton_bal, btc_bal, admin, s1, s2, s3, shares, last_reb);
 }

@@ -1,8 +1,8 @@
+#include "./stdlib.fc";
+
 ;; ─────────────────────────────────────────────────────────────
 ;; STON.fi – dummy DEX pool for TON/tgBTC demo
 ;; ─────────────────────────────────────────────────────────────
-#include "./stdlib.fc";
-
 
 ;; ────────── Storage layout ──────────
 ;; 0 uint64 : TON reserve (nanoTON)
@@ -11,18 +11,9 @@
 ;; 3 uint32 : Mock APY in basis points (e.g. 650 = 6.50%)
 ;; 4 addr   : Admin (for future extensions)
 
+;; ────────── Helpers ──────────
 
-() save_state(int ton_res, int tgbtc_res, int lp_tot, int apy, slice admin) impure {
-  builder b = begin_cell();
-  b.store_uint(ton_res,   64)
-   .store_uint(tgbtc_res, 64)
-   .store_uint(lp_tot,    64)
-   .store_uint(apy,       32)
-   .store_slice(admin);
-  set_data(b.end_cell());
-}
-
-(int) sqrt(int x)  {
+(int) sqrt(int x) {
   if (x <= 0) { return 0; }
   int z = (x + 1) / 2;
   int y = x;
@@ -32,16 +23,6 @@
   }
   return y;
 }
-
-(int) mint_lp(int added_ton, int added_tgbtc, int ton_res, int tgbtc_res, int lp_tot) {
-    if (lp_tot == 0) {
-        return sqrt(added_ton * added_tgbtc);
-    }
-    int share_ton   = (added_ton   * lp_tot) / ton_res;
-    int share_tgbtc = (added_tgbtc * lp_tot) / tgbtc_res;
-    return min(share_ton, share_tgbtc);
-}
-
 
 (int, int, int, int, slice) load_state() method_id {
   slice ds = get_data().begin_parse();
@@ -53,31 +34,60 @@
   return (ton_res, tgbtc_res, lp_tot, apy, admin);
 }
 
-() handle_add(slice in_body, int msg_value) impure {
-  in_body~load_uint(32);  ;; skip op
+() save_state(int ton_res, int tgbtc_res, int lp_tot, int apy, slice admin) impure {
+  builder b = begin_cell();
+  b.store_uint(ton_res,   64)
+   .store_uint(tgbtc_res, 64)
+   .store_uint(lp_tot,    64)
+   .store_uint(apy,       32)
+   .store_slice(admin);
+  set_data(b.end_cell());
+}
+
+(int) mint_lp(int added_ton, int added_tgbtc, int ton_res, int tgbtc_res, int lp_tot) {
+  if (lp_tot == 0) {
+    return sqrt(added_ton * added_tgbtc);
+  }
+  int share_ton   = (added_ton   * lp_tot) / ton_res;
+  int share_tgbtc = (added_tgbtc * lp_tot) / tgbtc_res;
+  return min(share_ton, share_tgbtc);
+}
+
+;; ────────── Operations ──────────
+
+() handle_add(cell in_full, slice in_body, int msg_value) impure {
+  in_body~load_uint(32);              ;; skip op
   slice sender = in_body~load_msg_addr();
   int ton_amt   = in_body~load_uint(64);
   int tgbtc_amt = in_body~load_uint(64);
+
   var (ton_res, tgbtc_res, lp_tot, apy, admin) = load_state();
   int to_mint = mint_lp(ton_amt, tgbtc_amt, ton_res, tgbtc_res, lp_tot);
+
   ton_res   += ton_amt;
   tgbtc_res += tgbtc_amt;
   lp_tot    += to_mint;
   save_state(ton_res, tgbtc_res, lp_tot, apy, admin);
+  ;; (demo: no LP tokens actually sent)
 }
 
-() handle_remove(slice in_body) impure {
-  in_body~load_uint(32);  ;; skip op
+() handle_remove(cell in_full, slice in_body) impure {
+  in_body~load_uint(32);              ;; skip op
   slice sender = in_body~load_msg_addr();
   int burn_lp = in_body~load_uint(64);
+
   var (ton_res, tgbtc_res, lp_tot, apy, admin) = load_state();
   if (lp_tot == 0) { return (); }
+
   int ton_out   = (ton_res   * burn_lp) / lp_tot;
   int tgbtc_out = (tgbtc_res * burn_lp) / lp_tot;
+
   ton_res   -= ton_out;
   tgbtc_res -= tgbtc_out;
   lp_tot    -= burn_lp;
   save_state(ton_res, tgbtc_res, lp_tot, apy, admin);
+
+  ;; return TON
   send_raw_message(
     begin_cell()
       .store_uint(0x10,6)
@@ -86,14 +96,34 @@
       .end_cell(),
     64
   );
+  ;; return tgBTC (demo: use internal-transfer)
+  send_raw_message(
+    begin_cell()
+      .store_uint(0x10,6)
+      .store_slice(sender)
+      .store_coins(0) ;; zero TON, signalling token transfer
+      .store_ref(
+        begin_cell()
+          .store_uint(0x178d4519,32) ;; OP_INTERNAL_TRANSFER
+          .store_uint(0,64)
+          .store_slice(sender)
+          .store_uint(tgbtc_out,64)
+          .end_cell()
+      )
+      .end_cell(),
+    64
+  );
 }
 
 () recv_internal(int msg_value, cell in_full, slice in_body) impure {
   if (in_body.slice_empty?()) { return (); }
   int op = in_body~load_uint(32);
-  if (op == 10) { handle_add(in_body, msg_value); }
-  if (op == 11) { handle_remove(in_body); }
+  if (op == 10) { handle_add(in_full, in_body, msg_value); }
+  if (op == 11) { handle_remove(in_full, in_body); }
 }
+
+;; ────────── Getters ──────────
+
 (int, int, int, int) get_pool_info() method_id {
   var (ton_res, tgbtc_res, lp_tot, apy, _) = load_state();
   return (ton_res, tgbtc_res, lp_tot, apy);

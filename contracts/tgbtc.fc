@@ -1,67 +1,77 @@
 #include "./stdlib.fc";
 
-;; Constants
-const OP_MINT = 1;
+;; ---------- Constants (compile-time) ----------
+const OP_MINT              = 1;          ;; mint(to, amount)
+const OP_INTERNAL_TRANSFER = 0x178d4519; ;; internal jetton transfer
+const OP_BURN              = 0x595f07bc; ;; burn
 
-;; Storage:
-;; 0 uint64 totalSupply  
+;; ---------- Storage layout ----------
+;; 0 uint64 totalSupply
 ;; 1 addr   admin
 ;; 2 cell   walletCode
 
 ;; Load state from storage
 (int, slice, cell) load_state() {
-    var s = get_data().begin_parse();
-    return (s~load_uint(64), s~load_msg_addr(), s~load_ref());
+    slice ds = get_data().begin_parse();
+    int   sup  = ds~load_uint(64);
+    slice adm  = ds~load_msg_addr();
+    cell  wc   = ds~load_ref();
+    return (sup, adm, wc);
 }
 
 ;; Save state to storage
 () save_state(int sup, slice adm, cell wc) impure {
-    set_data(begin_cell().store_uint(sup, 64).store_slice(adm).store_ref(wc).end_cell());
+    builder b = begin_cell()
+        .store_uint(sup, 64)
+        .store_slice(adm)
+        .store_ref(wc);
+    set_data(b.end_cell());
 }
 
-() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
-    ;; Check if message body is empty
-    if (in_msg_body.slice_empty?()) {
+() recv_internal(int my_balance, int msg_value, cell in_full, slice in_body) impure {
+    ;; If no body, ignore
+    if (in_body.slice_empty?()) {
         return ();
     }
-    
-    ;; Parse the message to get sender address
-    slice cs = in_msg_full.begin_parse();
-    int flags = cs~load_uint(4);
-    slice sender_addr = cs~load_msg_addr();
-    
-    ;; Parse the operation code
-    int op = in_msg_body~load_uint(32);
 
-    if (op == OP_MINT) {  ;; mint(to, amount)
-        ;; Next comes the "to" address
-        slice to = in_msg_body~load_msg_addr();
-        ;; Then the amount
-        int amount = in_msg_body~load_uint(64);
+    ;; Parse header to get sender
+    slice hdr = in_full.begin_parse();
+    hdr~load_uint(4);              ;; skip flags
+    slice sender = hdr~load_msg_addr();
 
-        ;; Load current state
-        (int supply, slice adm, cell wcode) = load_state();
+    ;; Parse operation code
+    int op = in_body~load_uint(32);
 
-        ;; Authorization check: only the admin can mint
-        ;; Check if sender is admin
-        throw_unless(401, equal_slice_bits(sender_addr, adm));
+    ;; Handle mint
+    if (op == OP_MINT) {
+        slice to     = in_body~load_msg_addr();
+        int   amount = in_body~load_uint(64);
 
-        ;; Update total supply
-        supply = supply + amount;
+        var (sup, adm, wc) = load_state();
+        throw_unless(401, equal_slice_bits(sender, adm));  ;; only admin
 
-        ;; Save back state
-        save_state(supply, adm, wcode);
-
-        ;; (Skipping actual wallet deployment in demo)
+        sup = sup + amount;
+        save_state(sup, adm, wc);
         return ();
     }
-    
-    ;; Unknown operation
-    throw(0xffff);
+
+    ;; Handle internal transfer (used by pools)
+    if (op == OP_INTERNAL_TRANSFER) {
+        slice to     = in_body~load_msg_addr();
+        int   amount = in_body~load_uint(64);
+
+        var (sup, adm, wc) = load_state();
+        ;; For demo: do not update totalSupply
+        ;; In full implementation: update balances in wallets
+        return ();
+    }
+
+    ;; Ignore burn or other ops in demo
+    return ();
 }
 
-;; Get method for reading jetton data
+;; Returns (totalSupply, 0, admin, empty code, empty data)
 (int, int, slice, cell, cell) get_jetton_data() method_id {
-    var (s, adm, _) = load_state();
-    return (s, 0, adm, begin_cell().end_cell(), begin_cell().end_cell());
+    var (sup, adm, wc) = load_state();
+    return (sup, 0, adm, begin_cell().end_cell(), wc);
 }

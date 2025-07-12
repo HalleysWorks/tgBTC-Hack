@@ -1,19 +1,24 @@
 #include "./stdlib.fc";
 
 ;; ---------- Constants (compile-time) ----------
-const OP_TRANSFER = 0xf8a7ea5;
-const OP_INTERNAL_TRANSFER = 0x178d4519;  
-const OP_BURN = 0x595f07bc;
+const OP_TRANSFER          = 0xf8a7ea5;  ;; user→user transfers
+const OP_INTERNAL_TRANSFER = 0x178d4519; ;; internal jetton movements
+const OP_BURN              = 0x595f07bc; ;; burn
 
 ;; ---------- Storage layout ----------
-;; balance:uint64  owner:addr  master:addr
+;; 0 uint64 balance
+;; 1 addr   owner
+;; 2 addr   master
 
-() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
-    ;; For demo, just ignore messages
+() recv_internal(int my_balance, int msg_value, cell in_full, slice in_body) impure {
+    ;; Demo wallet ignores all inbound messages
     return ();
 }
 
 (int, slice, slice) get_wallet_data() method_id {
     var s = get_data().begin_parse();
-    return (s~load_uint(64), s~load_msg_addr(), s~load_msg_addr());
+    int   bal   = s~load_uint(64);
+    slice owner = s~load_msg_addr();
+    slice mast  = s~load_msg_addr();
+    return (bal, owner, mast);
 }

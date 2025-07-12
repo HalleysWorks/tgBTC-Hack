@@ -1,11 +1,30 @@
-import { Config } from '@ton/blueprint';
+// blueprint.config.ts
+import { CompilerConfig } from '@ton/blueprint';
 
-export const config: Config = {
+const funcCompile: CompilerConfig = {
+    lang: 'func',
+    targets: [
+        'contracts/dedust_pool.fc',
+        'contracts/ston_pool.fc',
+        'contracts/megaton_pool.fc',
+        'contracts/tgbtc.fc',
+        'contracts/jetton_wallet.fc',
+        'contracts/vault.fc',
+    ],
+};
+
+export default {
     network: {
+        type: 'custom',
         endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC',
-        type: 'testnet',
-        version: 'v4',
-        // Optional: add API key for better rate limits
-        // key: 'YOUR_API_KEY_HERE',
+        version: 'v2',
+        key: '<YOUR_TONCENTER_API_KEY>',
+    },
+
+    // NOTE: CLI picks up this section automatically
+    compile: {
+        contracts: {
+            func: funcCompile,
+        },
     },
 };

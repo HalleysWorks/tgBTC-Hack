@@ -277,3 +277,179 @@ PS D:\hack-tgbtc\tgBTC-Hack>
 
 
 
+//////////// dedust pool ///////// 
+
+
+
+dedust_pool.fc
+Build script running, compiling dedust_pool.fc
+🔧 Using func version 0.4.6...
+
+✅ Compiled successfully! Cell BOC result:
+
+{
+  "hash": "8dab4aaf8cfeba5f14504d5ccf03e0c3515fc1270f3f1136e81ba0bc197a721a",
+  "hashBase64": "jatKr4z+ul8UUE1czwPgw1FfwScPPxE26BugvBl6cho=",
+  "hex": "b5ee9c724102120100015c000114ff00f4a413f4bcf2c80b01020162020d0202cb0304003dd0831c02497c0f834c7c87002a55518817c06644cf8b002e4c07c06a456f8a02012005080201f40607003d083040648c1c3808292ac00864972e66cc151c042a4116282ac0007a1b0860000d17c172327b5520020148090c0201200a0b00310830002557c0ea3c05b814512a162a411408ea006a412d822000510c0c74c7cc7e900c74cff4cfcc20807b8b7b50f6151d9514d97c061415e8140d680168040d00bc05e000c9431d31f31fa40d33f308201ee2ded43d822c000925f07e05345a823a9045346a824a9045161a15156a15047a1103659f0178010c8cb0523cf1658fa02c98040fb0testnet
+? Which wallet are you using? (Use 
+? Which wallet are you using? TON
+Connect compatible mobile wallet
+(example: Tonkeeper)
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQCCL2mH3OrsHUJk_s01g4S1zSpnISKOjnkZ02FkQqoY6aWx","amount":"50000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckECFAEAAaEAAgE0ARMBFP8A9KQT9LzyyAsCAgFiAw4CAssEBQA90IMcAkl8D4NMfIcAKlVRiBfAZkTPiwAuTAfAakVvigIBIAYJAgH0BwgAPQgwQGSMHDgIKSrACGSXLmbMFRwEKkEWKCrAAHobCGAADRfBcjJ7VSACAUgKDQIBIAsMADEIMAAlV8DqPAW4FFEqFipBFAjqAGpBLYIgAFEMDHTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwF4ADJQx0x8x+kDTPzCCAe4t7UPYIsAAkl8H4FNFqCOpBFNGqCSpBFFhoVFWoVBHoRA2WfAXgBDIywUjzxZY+gLJgED7AHCCEBeNRRnIyx/LPyLPFss/yYAQyMsFWM8WcPoCzMmAQPsAgCASAPEAAZv4jMEA9xb2oewKL4JAIBIBESABW65xggHuLe1D2DCAAhuuLe1E0NM/0z/TP9Mf+kAwgAewAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcKAGZnSQxXkxGOwknqaMQiWX/tHVX8MpPidgZ+OCOqi+0sQyIxjIg=="}],"valid_until":1752311656184,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '8'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgECGQEAAl4AAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHInaAAAAAm70Dup9iSdTNBc0BRUNkXwqoWA0wMpV9azcKYbG/wrNqGbJISIUqlphYDcLw/pG5vWrmKP0thHepfTzJpGfBqC4AICCg7DyG0DAwQAAAFpYgBBF7TD7nV2DqEyf2aawcJa5pUzkJFHRzyM6bCyIVUMdKAX14QAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAHsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHCgBmZ0kMV5MRjsJJ6mjEIll/7R1V/DKT4nYGfjgjqovtLEAIBYgkKAgLLCwwCASAVFgA90IMcAkl8D4NMfIcAKlVRiBfAZkTPiwAuTAfAakVvigIBIA0OAgH0DxACAUgREgA9CDBAZIwcOAgpKsAIZJcuZswVHAQqQRYoKsAAehsIYAANF8FyMntVIAIBIBMUAMlDHTHzH6QNM/MIIB7i3tQ9giwACSXwfgU0WoI6kEU0aoJKkEUWGhUVahUEehEDZZ8BeAEMjLBSPPFlj6AsmAQPsAcIIQF41FGcjLH8s/Is8Wyz/JgBDIywVYzxZw+gLMyYBA+wCAAxCDAAJVfA6jwFuBRRKhYqQRQI6gBqQS2CIABRDAx0x8x+kAx0z/TPzCCAe4t7UPYVHZUU2XwGFBXoFA1oAWgEDQC8BeAAGb+IzBAPcW9qHsCi+CQCASAXGAAVuucYIB7i3tQ9gwgAIbri3tRNDTP9M/0z/TH/pAMI',
+  id: 8
+}
+Sent transaction
+Contract deployed at address kQCCL2mH3OrsHUJk_s01g4S1zSpnISKOjnkZ02FkQqoY6R47
+You can view it at https://testnet.tonscan.org/address/kQCCL2mH3OrsHUJk_s01g4S1zSpnISKOjnkZ02FkQqoY6R47
+DeDust deployed at: EQCCL2mH3OrsHUJk_s01g4S1zSpnISKOjnkZ02FkQqoY6aWx
+PS D:\hack-tgbtc\tgBTC-Hack> 
+
+
+
+
+//////////////////Megaton ///
+Choose file to use 
+? Choose file to use
+deployMegatonPool
+? Which network do you want 
+? Which network do you want  
+":"50000000","payload":"te6cckEBAQEAAgAAAEysuc0="}],"valid_until":1752312503060,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '9'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgEBBQEAuwABRYgBmZ0kMV5MRjsJJ6mjEIll/7R1V/DKT4nYGfjgjqovtLAMAQGhc2lnbn////1ociq3AAAACrSW7mR8y8athq8/YthfYCgFlQnz/RrFj62SRy3PcKBKONaQMtFzSaPj4bAcwPPjPVYfS3wZclcaj3k3qO9bIkJgAgIKDsPIbQMDBAAAAGhiADzs0n339+A9YKqVMZ0s33EpICb9WECQW+oiKkhgqrYlIBfXhAAAAAAAAAAAAAAAAAAA',
+  id: 9
+}
+Sent transaction
+Awaiting contract deployment.Contract deployed at address kQB52aT77-_AesFVKmM6Wb7iUkBN-rCBILfURFSQwVVsSqy1
+You can view it at https://testnet.tonscan.org/address/kQB52aT77-_AesFVKmM6Wb7iUkBN-rCBILfURFSQwVVsSqy1
+✅ MegatonPool deployed at: EQB52aT77-_AesFVKmM6Wb7iUkBN-rCBILfURFSQwVVsShc_
+🧭 Explorer: https://testnet.tonscan.org/address/EQB52aT77-_AesFVKmM6Wb7iUkBN-rCBILfURFSQwVVsShc_
+PS D:\hack-tgbtc\tgBTC-Hack>
+///
+
+
+
+/////////////// stoon pool /////////////
+ npx blueprint run 
+? Choose file to use 
+? Choose file to use deployStonPool
+? Which network do you want to use? 
+? Which network do you want to use? testnet    
+? Which wallet are you using? (Use arrow keys) 
+? Which wallet are you using? TON Connect      
+compatible mobile wallet (example: Tonkeeper)  
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQDbezboymmTdBEt0_pO49bZV0kK26ZaBOOiOyekQAXZaeB7","amount":"50000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckECFAEAAaYAAgE0ARMBFP8A9KQT9LzyyAsCAgFiAw4CAssEBQA90IMcAkl8D4NMfIcAKlVRiBfAZkTPiwAuTAfAakVvigIBIAYJAgH0BwgAPQgwQGSMHDgIKSrACGSXLmbMFRwEKkEWKCrAAHobCGAADRfBcjJ7VSACAUgKDQIBIAsMADEIMAAlV8DqPAW4FFEqFipBFAjqAGpBLYIgAFEMDHTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwF4ADJQx0x8x+kDTPzCCAe4t7UPYIsAAkl8H4FNFqCOpBFNGqCSpBFFhoVFWoVBHoRA2WfAXgBDIywUjzxZY+gLJgED7AHCCEBeNRRnIyx/LPyLPFss/yYAQyMsFWM8WcPoCzMmAQPsAgCASAPEAAZv4jMEA9xb2oewKL4JAIBIBESABW65xggHuLe1D2DCAAhuuLe1E0NM/0z/TP9Mf+kAwgAhYAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADMzpIYryYjHYST1NGIRLL/2jqr+GUnxOwM/HBHVRfaWLHXaXj"}],"valid_until":1752312810420,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '10'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgECGQEAAmMAAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHIr6gAAAAuEKjhQJiW9A6YNp6wpcHvajEjU6sJiqVirvTcDV3QqiR+xlxyON6KD72awEPKo1faYQ1yWvUF8cRWAe9vlOw9DYAICCg7DyG0DAwQAAAFpYgBtvZt0ZTTJugiW6f0ncetsq6SFbdMtAnHRHZPSIALstKAX14QAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAIWAGZnSQxXkxGOwknqaMQiWX/tHVX8MpPidgZ+OCOqi+0sQAzM6SGK8mIx2Ek9TRiESy/9o6q/hlJ8TsDPxwR1UX2liAgFiCQoCAssLDAIBIBUWAD3QgxwCSXwPg0x8hwAqVVGIF8BmRM+LAC5MB8BqRW+KAgEgDQ4CAfQPEAIBSBESAD0IMEBkjBw4CCkqwAhkly5mzBUcBCpBFigqwAB6GwhgAA0XwXIye1UgAgEgExQAyUMdMfMfpA0z8wggHuLe1D2CLAAJJfB+BTRagjqQRTRqgkqQRRYaFRVqFQR6EQNlnwF4AQyMsFI88WWPoCyYBA+wBwghAXjUUZyMsfyz8izxbLP8mAEMjLBVjPFnD6AszJgED7AIADEIMAAlV8DqPAW4FFEqFipBFAjqAGpBLYIgAFEMDHTHzH6QDHTP9M/MIIB7i3tQ9hUdlRTZfAYUFegUDWgBaAQNALwF4AAZv4jMEA9xb2oewKL4JAIBIBcYABW65xggHuLe1D2DCAAhuuLe1E0NM/0z/TP9Mf+kAwg=', 
+  id: 10
+}
+Sent transaction
+Contract deployed at address kQDbezboymmTdBEt0_pO49bZV0kK26ZaBOOiOyekQAXZaVvx
+You can view it at https://testnet.tonscan.org/address/kQDbezboymmTdBEt0_pO49bZV0kK26ZaBOOiOyekQAXZaVvx
+✅ StonPool deployed at: EQDbezboymmTdBEt0_pO49bZV0kK26ZaBOOiOyekQAXZaeB7
+🧭 Explorer: https://testnet.tonscan.org/address/EQDbezboymmTdBEt0_pO49bZV0kK26ZaBOOiOyekQAXZaeB7
+
+
+
+///vault ////
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run 
+? Choose file to use 
+? Choose file to use deployVault
+? Which network do you want to use? 
+? Which network do you want to use? testnet
+? Which wallet are you using? (Use arrow keys)
+? Which wallet are you using? TON Connect compatible mobile 
+wallet (example: Tonkeeper)
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQDAu-JP0E5K8Rc7NmyS5auYRb78FKAtFJg3nJ-irs2EYRP7","amount":"100000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckECMAEABJ8AAgE0ASwBFP8A9KQT9LzyyAsCAgFiAxsCAssEBQCl0IMcAnDDQ0wMx+kAwAXDwFuAx0x/6QCLAAZlsItM/0z8w8BbgIsACl2wi0z8w8BfgWyDAA50wghAF9eEAvvLgSvAY4DHABJbwHJLwGt7ghA/y8ICASAGCQIB9AcIAE8MvAeU4mgghA7msoAqQRTmvAdUImgUGmgUFegEDVEA/Af8ByS8BregAHE8B4hwgDy4ElTeKgiqQRTeagjqQRRkaFQiaFQKaEQaAHwH4AQyMsFWM8WAfoCyYBA+wDwHJLwGt6ACASAKEgIBIAsOAgEgDA0AJTwHvgjUgKhgQEsvvLgS/Aa8B+AAVwhwAAhwACwkl8D4HB6yMsfyz8i+gIB+gLJgBDIywVQA88WAfoCzMmAQPsAgAgEgDxEB9zwHjAj8Bsj8Bsj8BtTmKBdvlNCvrCOEDMBgRdwAr6TgQnEk4EF3OKOL1Mjvl2+sI4QMgKBF3ADvpOBCcSTgQXc4o4TMVm+loEJxIEF3JaBBdyBCcTiWeJY4lIiqIEnEKkEUiKogScQqQRRIaEioSHCAJVSYnDwGZEx4iGAQADbCAJVSQnDwGZEx4iDCAJVSIHDwGZEw4vgj8B8ASTwHltsM1IzxwWVXwOBAorgUiDHBZRbgQHC4McFk4EB9OCBAZCACASATGAIBIBQVADk8B5sQfgjMqGBASy5kltw4KCCEDuaygC5kXDgcYALxPAeW2wzIvAbIvAbIvAbUyGgAaACgScQqCKpBAGBJxCoWKkEU2GogScQqQRTcaiBJxCpBFGBoSihUnSogScQqQRSc6iBJxCpBFFyoSehIcIAI8IAsZRGFvAZkjZb4iXCACXCALGVUFTwGRKTNTMw4iLCACHCALHjD4BYXAAYS8BkABF8DAgEgGRoAVTtRNDTP9M/+kD6QPpA+kDTP9QwcCFus58B0CDXScI/lDHTPzCRMOKRMeKAADRfCMjJ7VSACASAcJQIBIB0iAgJxHiECAckfIAAPrbwHl8GbwKAAC698B5scYAAIqlDwHAIBICMkAIm1RP4Dy22GYF4DYD4DYF4DamJXymQ31hOr4HAi7hAhOJAgu43gfApEV8s31hNwITiQIu4QILuN4HwQILuQITiQIu4N4HAAJ7TAPgPLbYZgXgNgPgNgXgNiTeBwAgEgJikCASAnKAATtL9+A8tthm3gcACptc4+A8tthmBeA2A+A2BeA2piV8pkN9YTMCLuECE4kCC7kcOKZDfKZjfWEzAhOJAi7hAgu5MwILuQITiQIu4cXF4DkEAhB72oexBAPMzdqHsCDw3hMAICdCorAA6qd/AeF18HAA6qZvAeXwagAwAtLi8AMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACFgBmZ0kMV5MRjsJJ6mjEIll/7R1V/DKT4nYGfjgjqovtLEANt7NujKaZN0ES3T+k7j1tlXSQrbploE46I7J6RABdlpgCFgBBF7TD7nV2DqEyf2aawcJa5pUzkJFHRzyM6bCyIVUMdMAHnZpPvv78B6wVUqYzpZvuJSQE36sIEgt9REVJDBVWxKpaTFsU="}],"valid_until":1752313460652,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '11'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgECNQEABVwAAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHIudAAAAAyYIhn7K+d/SlXSbA+RJuSLdArILLiutFVdu9JuIFqq66cCkYJSrH29ueu1s2C+gOdv7CTVmFcZVAXwjG42FlyCIAICCg7DyG0DAwQAAAFpYgBgXfEn6CcleIudmzZJctXMIt9+ClAWikwbzk/RV2bCMKAvrwgAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAwAyMzQCAWIJCgICywsMAgEgIiMApdCDHAJww0NMDMfpAMAFw8BbgMdMf+kAiwAGZbCLTP9M/MPAW4CLAApdsItM/MPAX4FsgwAOdMIIQBfXhAL7y4ErwGOAxwASW8ByS8Bre4IQP8vCAgEgDQ4CAfQPEAIBIBESAE8MvAeU4mgghA7msoAqQRTmvAdUImgUGmgUFegEDVEA/Af8ByS8BregAHE8B4hwgDy4ElTeKgiqQRTeagjqQRRkaFQiaFQKaEQaAHwH4AQyMsFWM8WAfoCyYBA+wDwHJLwGt6ACASATFAIBIBobAgEgFRYCASAXGAAlPAe+CNSAqGBASy+8uBL8BrwH4ABXCHAACHAALCSXwPgcHrIyx/LPyL6AgH6AsmAEMjLBVADzxYB+gLMyYBA+wCAB9zwHjAj8Bsj8Bsj8BtTmKBdvlNCvrCOEDMBgRdwAr6TgQnEk4EF3OKOL1Mjvl2+sI4QMgKBF3ADvpOBCcSTgQXc4o4TMVm+loEJxIEF3JaBBdyBCcTiWeJY4lIiqIEnEKkEUiKogScQqQRRIaEioSHCAJVSYnDwGZEx4iGAZAEk8B5bbDNSM8cFlV8DgQKK4FIgxwWUW4EBwuDHBZOBAfTggQGQgADbCAJVSQnDwGZEx4iDCAJVSIHDwGZEw4vgj8B8CASAcHQIBICAhADk8B5sQfgjMqGBASy5kltw4KCCEDuaygC5kXDgcYALxPAeW2wzIvAbIvAbIvAbUyGgAaACgScQqCKpBAGBJxCoWKkEU2GogScQqQRTcaiBJxCpBFGBoSihUnSogScQqQRSc6iBJxCpBFFyoSehIcIAI8IAsZRGFvAZkjZb4iXCACXCALGVUFTwGRKTNTMw4iLCACHCALHjD4B4fAAYS8BkABF8DAFU7UTQ0z/TP/pA+kD6QPpA0z/UMHAhbrOfAdAg10nCP5Qx0z8wkTDikTHigAA0XwjIye1UgAgEgJCUCASAsLQICcSYnAgEgKisCAckoKQAIqlDwHAAPrbwHl8GbwKAAC698B5scYACJtUT+A8tthmBeA2A+A2BeA2piV8pkN9YTq+BwIu4QITiQILuN4HwKRFfLN9YTcCE4kCLuECC7jeB8ECC7kCE4kCLuDeBwACe0wD4Dy22GYF4DYD4DYF4DYk3gcAIBIC4vAgJ0MDEAE7S/fgPLbYZt4HAAqbXOPgPLbYZgXgNgPgNgXgNqYlfKZDfWEzAi7hAhOJAgu5HDimQ3ymY31hMwITiQIu4QILuTMCC7kCE4kCLuHFxeA5BAIQe9qHsQQDzM3ah7Ag8N4TAADqp38B4XXwcADqpm8B5fBqAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACFgBmZ0kMV5MRjsJJ6mjEIll/7R1V/DKT4nYGfjgjqovtLEANt7NujKaZN0ES3T+k7j1tlXSQrbploE46I7J6RABdlpgCFgBBF7TD7nV2DqEyf2aawcJa5pUzkJFHRzyM6bCyIVUMdMAHnZpPvv78B6wVUqYzpZvuJSQE36sIEgt9REVJDBVWxKg==',
+  id: 11
+}
+Sent transaction
+Contract deployed at address kQDAu-JP0E5K8Rc7NmyS5auYRb78FKAtFJg3nJ-irs2EYahx
+You can view it at https://testnet.tonscan.org/address/kQDAu-JP0E5K8Rc7NmyS5auYRb78FKAtFJg3nJ-irs2EYahx
+✅ Vault deployed at: EQDAu-JP0E5K8Rc7NmyS5auYRb78FKAtFJg3nJ-irs2EYRP7
+🧭 Explorer: https://testnet.tonscan.org/address/EQDAu-JP0E5K8Rc7NmyS5auYRb78FKAtFJg3nJ-irs2EYRP7
+PS D:\hack-tgbtc\tgBTC-Hack> 
+
+//////////////////////////// tgbtc /////////////////
+PS D:\hack-tgbtc\tgBTC-Hack> npx blueprint run
+
+? Choose file to use 
+? Choose file to use deployTgbtc
+? Which network do you want to use? 
+? Which network do you want to use? testnet   
+? Which wallet are you using? (Use arrow keys)
+? Which wallet are you using? TON Connect     
+compatible mobile wallet (example: Tonkeeper) 
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: { 
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQDLpbQ2sNlYHfBb88iAVqJYgywQpNvlsVkVpxVqor8Yws9T","amount":"100000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckEBDgEA1QACATQBCQEU/wD0pBP0vPLICwICAWIDCAICywQFAHHRsIiDHAJFb4AHQ0wMx+kAwAdMfIcABjhUx+kAx0z8w8BZRQccF8uGRAqAC8BfgMDGCEBeNRRm63ICAnMGBwATO1E0NM/+kDUMIAAXALIyz8BzxbMye1UgABOhPFvgLOGRkoYHAVMAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxAKART/APSkE/S88sgLCwIBYgwNAAbQXwQAGaD2BdqJoaZ/9IH0gGEqU1Hy"}],"valid_until":1752314218974,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '12'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgECEwEAAZIAAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHIxagAAAA2ocy3RG5plygctEC3upQj34xXNORRY+lTErLq9UKBwoFiRIhyW+wzly+ONqiKAOTW2FAl9pzFogCzImnVs8KuCIAICCg7DyG0DAwQAAAFpYgBl0tobWGysDvgt+eRAK1EsQZYIUm3y2KyK04q1UV+MYSAvrwgAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAVMAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxAPAgFiCQoCAssLDAAToTxb4CzhkZKGBwBx0bCIgxwCRW+AB0NMDMfpAMAHTHyHAAY4VMfpAMdM/MPAWUUHHBfLhkQKgAvAX4DAxghAXjUUZutyAgJzDQ4AEztRNDTP/pA1DCAAFwCyMs/Ac8WzMntVIAEU/wD0pBP0vPLICxACAWIREgAG0F8EABmg9gXaiaGmf/SB9IBh',
+  id: 12
+}
+Sent transaction
+Contract deployed at address kQDLpbQ2sNlYHfBb88iAVqJYgywQpNvlsVkVpxVqor8YwnTZ
+You can view it at https://testnet.tonscan.org/address/kQDLpbQ2sNlYHfBb88iAVqJYgywQpNvlsVkVpxVqor8YwnTZ
+✅ tgbtc root deployed at: EQDLpbQ2sNlYHfBb88iAVqJYgywQpNvlsVkVpxVqor8Yws9T
+PS D:\hack-tgbtc\tgBTC-Hack> 
+
+/////////////////////// jetton wallet ///////////////////
+
+PS D:\hack-tgbtc\tgBTC-Hack>npx blueprint run
+? Choose file to use 
+? Choose file to use deployJettonWallet
+? Which network do you want to use? 
+? Which network do you want to use? testnet       
+? Which wallet are you using? (Use arrow keys)    
+? Which wallet are you using? TON Connect
+compatible mobile wallet (example: Tonkeeper)     
+Connected to wallet at address: 0QDMzpIYryYjHYST1NGIRLL_2jqr-GUnxOwM_HBHVRfaWLcA
+Sending transaction. Approve in your wallet...[TON_CONNECT_SDK] Send http-bridge request: {
+  method: 'sendTransaction',
+  params: [
+    '{"messages":[{"address":"EQDqUJoFjH6asVbEXL-P_LZ1Ng25K3xWGzpgaHH9RJ-Npnzy","amount":"50000000","payload":"te6cckEBAQEAAgAAAEysuc0=","stateInit":"te6cckEBBgEAeAACATQBBQEU/wD0pBP0vPLICwICAWIDBAAG0F8EABmg9gXaiaGmf/SB9IBhAJUAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADLpbQ2sNlYHfBb88iAVqJYgywQpNvlsVkVpxVqor8Ywo/lK2M"}],"valid_until":1752314413590,"from":"0:ccce9218af26231d8493d4d18844b2ffda3aabf86527c4ec0cfc70475517da58","network":"-3"}'
+  ],
+  id: '13'
+}
+[TON_CONNECT_SDK] Wallet message received: {
+  result: 'te6ccgECCwEAATUAAUWIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SwDAEBoXNpZ25////9aHIyLQAAAA6hqnDDJlq10BMw5zTR4Tu60gLMtzmzFrBFamJ5KTe7wYfRQDNCogsTj5QcsRc7uKvBbmxOyCf6M6yOupqH33bCoAICCg7DyG0DAwQAAAFpYgB1KE0Cxj9NWKtiLl/H/ls6mwbclb4rDZ0wNDj+ok/G0yAX14QAAAAAAAAAAAAAAAAAA0AFAgE0BgcBFP8A9KQT9LzyyAsIAJUAAAAAAAAAAIAZmdJDFeTEY7CSepoxCJZf+0dVfwyk+J2Bn44I6qL7SxADLpbQ2sNlYHfBb88iAVqJYgywQpNvlsVkVpxVqor8YwoCAWIJCgAG0F8EABmg9gXaiaGmf/SB9IBh',
+  id: 13
+}
+Sent transaction
+Contract deployed at address kQDqUJoFjH6asVbEXL-P_LZ1Ng25K3xWGzpgaHH9RJ-Npsd4
+You can view it at https://testnet.tonscan.org/address/kQDqUJoFjH6asVbEXL-P_LZ1Ng25K3xWGzpgaHH9RJ-Npsd4
+✅ JettonWallet deployed at: EQDqUJoFjH6asVbEXL-P_LZ1Ng25K3xWGzpgaHH9RJ-Npnzy
+🧭 Explorer: https://testnet.tonscan.org/address/EQDqUJoFjH6asVbEXL-P_LZ1Ng25K3xWGzpgaHH9RJ-Npnzy   
+PS D:\hack-tgbtc\tgBTC-Hack> 
