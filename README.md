@@ -10,9 +10,13 @@ The video links aren't working because:
 
 ## Demo Videos
 
-<iframe width="315" height="560" src="https://www.youtube.com/embed/oxq2N6hQr-g" frameborder="0" allowfullscreen></iframe>
+### tgBTC Demo Video 1
 
-<iframe width="315" height="560" src="https://www.youtube.com/embed/tjBJaroB0Vo" frameborder="0" allowfullscreen></iframe>
+[![Watch the video](https://img.youtube.com/vi/oxq2N6hQr-g/maxresdefault.jpg)](https://www.youtube.com/watch?v=oxq2N6hQr-g)
+
+### tgBTC Demo Video 2
+
+[![Watch the video](https://img.youtube.com/vi/tjBJaroB0Vo/maxresdefault.jpg)](https://www.youtube.com/watch?v=tjBJaroB0Vo)
 
 # Custom Contracts
 
